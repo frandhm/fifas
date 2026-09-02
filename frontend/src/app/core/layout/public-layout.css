@@ -1,0 +1,131 @@
+.public-shell {
+  display: flex;
+  min-height: 100dvh;
+  flex-direction: column;
+  background: #07101f;
+  color: #e8eef7;
+}
+
+.public-shell__content {
+  flex: 1;
+}
+
+.public-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.85rem 1.4rem;
+  background: #0b1730;
+  border-bottom: 1px solid rgb(212 175 55 / 0.28);
+}
+
+.public-header__brand {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: #f3e6b0;
+  text-decoration: none;
+  font-weight: 800;
+}
+
+.public-header__brand img {
+  height: 2.6rem;
+  width: auto;
+}
+
+.public-header__nav {
+  display: none;
+  align-items: center;
+  gap: 1.4rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.public-header__nav a {
+  color: #c9d4e5;
+  text-decoration: none;
+}
+
+.public-header__nav a:hover,
+.public-header__nav a.is-active {
+  color: #f3e6b0;
+  text-decoration: underline;
+  text-underline-offset: 0.35rem;
+}
+
+.public-header__actions {
+  display: flex;
+  gap: 0.65rem;
+}
+
+.public-header__actions a {
+  display: grid;
+  place-items: center;
+  width: 2.15rem;
+  height: 2.15rem;
+  border: 1px solid rgb(212 175 55 / 0.4);
+  border-radius: 999px;
+  color: #f3e6b0;
+}
+
+.public-header__actions svg {
+  width: 1.15rem;
+  height: 1.15rem;
+}
+
+.public-footer {
+  background: #050b16;
+  border-top: 1px solid rgb(212 175 55 / 0.2);
+  padding: 2rem 1.4rem 1.1rem;
+}
+
+.public-footer__grid {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 70rem;
+  margin: 0 auto;
+}
+
+.public-footer h2 {
+  margin: 0 0 0.7rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #f3e6b0;
+}
+
+.public-footer a,
+.public-footer p {
+  display: block;
+  margin: 0.3rem 0;
+  color: #b7c3d6;
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+
+.public-footer a:hover {
+  color: #fff;
+}
+
+.public-footer__copy {
+  max-width: 70rem;
+  margin: 1.6rem auto 0;
+  padding-top: 1rem;
+  border-top: 1px solid rgb(255 255 255 / 0.08);
+  text-align: center;
+  font-size: 0.75rem;
+  color: #8b98ad;
+}
+
+@media (min-width: 768px) {
+  .public-header__nav {
+    display: flex;
+  }
+
+  .public-footer__grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}

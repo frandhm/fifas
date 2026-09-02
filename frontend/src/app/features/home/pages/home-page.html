@@ -1,0 +1,69 @@
+<main class="home">
+  <img class="home__bg" src="/images/stadium.jpg" alt="" />
+  <div class="home__overlay"></div>
+
+  <section class="home-banner" aria-labelledby="custom-title">
+    <div class="home-banner__copy">
+      <h1 id="custom-title">¡Solicita tu camiseta personalizada acá!</h1>
+      <p>Personaliza tu dorsal, nombre y colores. Diseño exclusivo online.</p>
+    </div>
+    <a routerLink="/personalizar" class="home-banner__cta">Diseñar ahora</a>
+  </section>
+
+  <section class="home-carousel" aria-labelledby="collection-title">
+    <h2 id="collection-title">Vístete como un campeón — nueva colección</h2>
+
+    <div class="home-carousel__stage">
+      <button type="button" class="home-carousel__arrow" (click)="prev()" aria-label="Anterior">
+        ‹
+      </button>
+
+      <article class="home-card home-card--side" aria-hidden="true">
+        <div
+          class="home-card__kit"
+          [style.--accent]="prevProduct().accent"
+          [style.--stripe]="prevProduct().stripe"
+        ></div>
+      </article>
+
+      <article class="home-card home-card--main">
+        <div
+          class="home-card__kit"
+          [style.--accent]="current().accent"
+          [style.--stripe]="current().stripe"
+        ></div>
+        <div class="home-card__info">
+          <h3>{{ current().name }}</h3>
+          <p>{{ current().price }}</p>
+          <div class="home-card__actions">
+            <a routerLink="/catalogo">Ver producto</a>
+            <button type="button" (click)="addToCart()">Añadir al carrito</button>
+          </div>
+        </div>
+      </article>
+
+      <article class="home-card home-card--side" aria-hidden="true">
+        <div
+          class="home-card__kit"
+          [style.--accent]="nextProduct().accent"
+          [style.--stripe]="nextProduct().stripe"
+        ></div>
+      </article>
+
+      <button type="button" class="home-carousel__arrow" (click)="next()" aria-label="Siguiente">
+        ›
+      </button>
+    </div>
+
+    <div class="home-carousel__dots">
+      @for (product of products; track product.id; let i = $index) {
+        <button
+          type="button"
+          [class.is-active]="index() === i"
+          (click)="goTo(i)"
+          [attr.aria-label]="'Ver ' + product.name"
+        ></button>
+      }
+    </div>
+  </section>
+</main>

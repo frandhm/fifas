@@ -20,6 +20,13 @@ export const routes: Routes = [
           import('./features/catalog/pages/catalog-page').then((m) => m.CatalogPage),
       },
       {
+        path: 'personalizar',
+        loadComponent: () =>
+          import('./features/custom-jersey/pages/custom-jersey-page').then(
+            (m) => m.CustomJerseyPage,
+          ),
+      },
+      {
         path: 'carrito',
         loadComponent: () => import('./features/cart/pages/cart-page').then((m) => m.CartPage),
       },
