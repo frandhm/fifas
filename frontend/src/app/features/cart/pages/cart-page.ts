@@ -26,12 +26,35 @@ export class CartPage {
   );
 
   readonly total = computed(() => this.lines().reduce((sum, line) => sum + line.subtotal, 0));
+  readonly count = this.cart.count;
 
   priceLabel(price: number): string {
     return `$${price.toFixed(2)}`;
   }
 
-  remove(productId: string): void {
-    this.cart.remove(productId);
+  increase(productId: string, size?: string): void {
+    const line = this.cart.items().find(
+      (l) => l.productId === productId && l.size === size,
+    );
+    if (line) {
+      this.cart.updateQuantity(productId, line.quantity + 1, size);
+    }
+  }
+
+  decrease(productId: string, size?: string): void {
+    const line = this.cart.items().find(
+      (l) => l.productId === productId && l.size === size,
+    );
+    if (line) {
+      this.cart.updateQuantity(productId, line.quantity - 1, size);
+    }
+  }
+
+  remove(productId: string, size?: string): void {
+    this.cart.remove(productId, size);
+  }
+
+  clear(): void {
+    this.cart.clear();
   }
 }

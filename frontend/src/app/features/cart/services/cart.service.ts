@@ -5,6 +5,7 @@ const STORAGE_KEY = 'fifas.cart';
 export interface CartLine {
   productId: string;
   quantity: number;
+  size?: string;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -14,21 +15,45 @@ export class CartService {
   readonly items = this.lines.asReadonly();
   readonly count = computed(() => this.lines().reduce((sum, line) => sum + line.quantity, 0));
 
-  add(productId: string): void {
+  add(productId: string, size?: string): void {
     this.lines.update((current) => {
-      const existing = current.find((line) => line.productId === productId);
+      const existing = current.find(
+        (line) => line.productId === productId && line.size === size,
+      );
       if (!existing) {
-        return [...current, { productId, quantity: 1 }];
+        return [...current, { productId, quantity: 1, size }];
       }
       return current.map((line) =>
-        line.productId === productId ? { ...line, quantity: line.quantity + 1 } : line,
+        line.productId === productId && line.size === size
+          ? { ...line, quantity: line.quantity + 1 }
+          : line,
       );
     });
     this.persist();
   }
 
-  remove(productId: string): void {
-    this.lines.update((current) => current.filter((line) => line.productId !== productId));
+  remove(productId: string, size?: string): void {
+    this.lines.update((current) =>
+      current.filter((line) => !(line.productId === productId && line.size === size)),
+    );
+    this.persist();
+  }
+
+  updateQuantity(productId: string, quantity: number, size?: string): void {
+    if (quantity <= 0) {
+      this.remove(productId, size);
+      return;
+    }
+    this.lines.update((current) =>
+      current.map((line) =>
+        line.productId === productId && line.size === size ? { ...line, quantity } : line,
+      ),
+    );
+    this.persist();
+  }
+
+  clear(): void {
+    this.lines.set([]);
     this.persist();
   }
 

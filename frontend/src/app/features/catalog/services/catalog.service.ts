@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Product } from '../../../core/models/product';
+import { ADULT_SIZES, KIDS_SIZES, Product } from '../../../core/models/product';
 
 const PRODUCTS: Product[] = [
   {
@@ -10,6 +10,7 @@ const PRODUCTS: Product[] = [
     stripe: '#f4f7fb',
     category: 'local',
     description: 'Rayas azul y blanco. La camiseta de casa para la temporada 2026.',
+    sizes: [...ADULT_SIZES],
   },
   {
     id: 'visitante-2026',
@@ -19,6 +20,7 @@ const PRODUCTS: Product[] = [
     stripe: '#d4af37',
     category: 'visitante',
     description: 'Navy con detalles dorados para los partidos de visitante.',
+    sizes: [...ADULT_SIZES],
   },
   {
     id: 'tercera-roja',
@@ -28,6 +30,7 @@ const PRODUCTS: Product[] = [
     stripe: '#f1d5c0',
     category: 'tercera',
     description: 'Tercera equipación en rojo, corte clásico de competición.',
+    sizes: [...ADULT_SIZES],
   },
   {
     id: 'portero',
@@ -37,6 +40,7 @@ const PRODUCTS: Product[] = [
     stripe: '#0b1730',
     category: 'portero',
     description: 'Verde y navy, pensada para el arco.',
+    sizes: [...ADULT_SIZES],
   },
   {
     id: 'retro',
@@ -46,6 +50,7 @@ const PRODUCTS: Product[] = [
     stripe: '#e8c36a',
     category: 'retro',
     description: 'Homenaje a la camiseta del 98, edición limitada.',
+    sizes: [...ADULT_SIZES],
   },
   {
     id: 'local-nino',
@@ -55,6 +60,7 @@ const PRODUCTS: Product[] = [
     stripe: '#f4f7fb',
     category: 'local',
     description: 'Misma local 2026, talla infantil.',
+    sizes: [...KIDS_SIZES],
   },
 ];
 

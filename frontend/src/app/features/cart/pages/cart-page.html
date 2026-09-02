@@ -6,30 +6,115 @@
     <h1>Carrito</h1>
 
     @if (lines().length === 0) {
-      <p class="cart__empty">
-        Tu carrito está vacío.
-        <a routerLink="/catalogo">Ver camisetas</a>
-      </p>
+      <div class="cart__empty">
+        <svg class="cart__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 7h15l-1.5 8.5H8L6 7Z" />
+          <path d="M6 7 5 4H2" />
+          <circle cx="9" cy="20" r="1.3" />
+          <circle cx="18" cy="20" r="1.3" />
+        </svg>
+        <p>Tu carrito está vacío</p>
+        <a routerLink="/catalogo" class="cart__cta-link">Ver camisetas →</a>
+      </div>
     } @else {
-      <ul class="cart__list">
-        @for (line of lines(); track line.product.id) {
-          <li>
-            <div
-              class="cart__kit"
-              [style.--accent]="line.product.accent"
-              [style.--stripe]="line.product.stripe"
-            ></div>
-            <div>
-              <h2>{{ line.product.name }}</h2>
-              <p>{{ line.quantity }} × {{ priceLabel(line.product.price) }}</p>
-            </div>
-            <strong>{{ priceLabel(line.subtotal) }}</strong>
-            <button type="button" (click)="remove(line.product.id)">Quitar</button>
-          </li>
-        }
-      </ul>
-      <p class="cart__total">Total {{ priceLabel(total()) }}</p>
-      <a routerLink="/catalogo" class="cart__continue">Seguir comprando</a>
+      <div class="cart__layout">
+
+        <!-- LISTA DE PRODUCTOS -->
+        <section class="cart__items">
+          <div class="cart__items-header">
+            <span>{{ count() }} {{ count() === 1 ? 'artículo' : 'artículos' }}</span>
+            <button type="button" class="cart__clear-btn" (click)="clear()">
+              Vaciar carrito
+            </button>
+          </div>
+
+          <ul class="cart__list">
+            @for (line of lines(); track line.product.id + (line.size ?? '')) {
+              <li class="cart__item">
+                <!-- Miniatura de la camiseta -->
+                <div
+                  class="cart__kit"
+                  [style.--accent]="line.product.accent"
+                  [style.--stripe]="line.product.stripe"
+                ></div>
+
+                <!-- Info del producto -->
+                <div class="cart__item-info">
+                  <h2>{{ line.product.name }}</h2>
+                  @if (line.size) {
+                    <span class="cart__item-size">Talla: {{ line.size }}</span>
+                  }
+                  <p class="cart__item-unit">{{ priceLabel(line.product.price) }} / ud.</p>
+                </div>
+
+                <!-- Control de cantidad -->
+                <div class="cart__qty">
+                  <button
+                    type="button"
+                    class="cart__qty-btn"
+                    aria-label="Reducir cantidad"
+                    (click)="decrease(line.product.id, line.size)"
+                  >−</button>
+                  <span class="cart__qty-value">{{ line.quantity }}</span>
+                  <button
+                    type="button"
+                    class="cart__qty-btn"
+                    aria-label="Aumentar cantidad"
+                    (click)="increase(line.product.id, line.size)"
+                  >+</button>
+                </div>
+
+                <!-- Subtotal -->
+                <strong class="cart__item-subtotal">{{ priceLabel(line.subtotal) }}</strong>
+
+                <!-- Quitar -->
+                <button
+                  type="button"
+                  class="cart__remove-btn"
+                  aria-label="Quitar artículo"
+                  (click)="remove(line.product.id, line.size)"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6 6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- RESUMEN -->
+        <aside class="cart__summary">
+          <h2>Resumen del pedido</h2>
+
+          <div class="cart__summary-lines">
+            @for (line of lines(); track line.product.id + (line.size ?? '')) {
+              <div class="cart__summary-row">
+                <span>{{ line.product.name }}{{ line.size ? ' · ' + line.size : '' }} × {{ line.quantity }}</span>
+                <span>{{ priceLabel(line.subtotal) }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="cart__summary-divider"></div>
+
+          <div class="cart__summary-total">
+            <span>Total</span>
+            <strong>{{ priceLabel(total()) }}</strong>
+          </div>
+
+          <button type="button" class="cart__checkout-btn" disabled>
+            Proceder al pago
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+          <p class="cart__checkout-note">El pago estará disponible próximamente.</p>
+
+          <a routerLink="/catalogo" class="cart__continue">← Seguir comprando</a>
+        </aside>
+
+      </div>
     }
   </div>
 </main>
