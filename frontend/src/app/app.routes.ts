@@ -20,6 +20,11 @@ export const routes: Routes = [
           import('./features/catalog/pages/catalog-page').then((m) => m.CatalogPage),
       },
       {
+        path: 'catalogo/:id',
+        loadComponent: () =>
+          import('./features/catalog/pages/product-page').then((m) => m.ProductPage),
+      },
+      {
         path: 'personalizar',
         loadComponent: () =>
           import('./features/custom-jersey/pages/custom-jersey-page').then(

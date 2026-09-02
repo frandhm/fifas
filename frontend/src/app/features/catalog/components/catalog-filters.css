@@ -1,0 +1,25 @@
+.catalog-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.catalog-filters button {
+  border: 1px solid rgb(212 175 55 / 0.35);
+  border-radius: 999px;
+  background: rgb(11 23 48 / 0.85);
+  color: #c9d4e5;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+}
+
+.catalog-filters button.is-active,
+.catalog-filters button:hover {
+  background: #1e4fa3;
+  border-color: #1e4fa3;
+  color: #fff;
+}

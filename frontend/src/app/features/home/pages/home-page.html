@@ -34,9 +34,9 @@
         ></div>
         <div class="home-card__info">
           <h3>{{ current().name }}</h3>
-          <p>{{ current().price }}</p>
+          <p>{{ priceLabel(current().price) }}</p>
           <div class="home-card__actions">
-            <a routerLink="/catalogo">Ver producto</a>
+            <a [routerLink]="['/catalogo', current().id]">Ver producto</a>
             <button type="button" (click)="addToCart()">Añadir al carrito</button>
           </div>
         </div>

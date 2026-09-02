@@ -1,0 +1,13 @@
+<article class="product-card">
+  <div
+    class="product-card__kit"
+    [style.--accent]="product().accent"
+    [style.--stripe]="product().stripe"
+  ></div>
+  <h3>{{ product().name }}</h3>
+  <p class="product-card__price">{{ priceLabel(product().price) }}</p>
+  <div class="product-card__actions">
+    <a [routerLink]="['/catalogo', product().id]">Ver producto</a>
+    <button type="button" (click)="add.emit(product().id)">Añadir al carrito</button>
+  </div>
+</article>

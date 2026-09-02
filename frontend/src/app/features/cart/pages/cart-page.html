@@ -1,0 +1,35 @@
+<main class="cart">
+  <img class="cart__bg" src="/images/stadium.jpg" alt="" />
+  <div class="cart__overlay"></div>
+
+  <div class="cart__content">
+    <h1>Carrito</h1>
+
+    @if (lines().length === 0) {
+      <p class="cart__empty">
+        Tu carrito está vacío.
+        <a routerLink="/catalogo">Ver camisetas</a>
+      </p>
+    } @else {
+      <ul class="cart__list">
+        @for (line of lines(); track line.product.id) {
+          <li>
+            <div
+              class="cart__kit"
+              [style.--accent]="line.product.accent"
+              [style.--stripe]="line.product.stripe"
+            ></div>
+            <div>
+              <h2>{{ line.product.name }}</h2>
+              <p>{{ line.quantity }} × {{ priceLabel(line.product.price) }}</p>
+            </div>
+            <strong>{{ priceLabel(line.subtotal) }}</strong>
+            <button type="button" (click)="remove(line.product.id)">Quitar</button>
+          </li>
+        }
+      </ul>
+      <p class="cart__total">Total {{ priceLabel(total()) }}</p>
+      <a routerLink="/catalogo" class="cart__continue">Seguir comprando</a>
+    }
+  </div>
+</main>

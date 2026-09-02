@@ -1,7 +1,7 @@
 import { Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CartService } from '../../cart/services/cart.service';
-import { HOME_PRODUCTS } from '../home-products';
+import { CatalogService } from '../../catalog/services/catalog.service';
 
 @Component({
   selector: 'app-home-page',
@@ -10,9 +10,10 @@ import { HOME_PRODUCTS } from '../home-products';
   styleUrl: './home-page.css',
 })
 export class HomePage {
+  private readonly catalog = inject(CatalogService);
   private readonly cart = inject(CartService);
 
-  readonly products = HOME_PRODUCTS;
+  readonly products = this.catalog.list();
   readonly index = signal(0);
 
   readonly current = computed(() => this.products[this.index()]);
@@ -22,6 +23,10 @@ export class HomePage {
   readonly nextProduct = computed(
     () => this.products[(this.index() + 1) % this.products.length],
   );
+
+  priceLabel(price: number): string {
+    return `$${price.toFixed(2)}`;
+  }
 
   prev(): void {
     this.index.update((value) => (value - 1 + this.products.length) % this.products.length);
