@@ -1,0 +1,56 @@
+<div class="login-page">
+  <img class="login-page__bg" src="/images/stadium.jpg" alt="" />
+  <div class="login-page__overlay"></div>
+
+  <main class="login-main">
+    <section class="login-card" aria-labelledby="login-title">
+      <img class="login-card__logo" src="/images/logo.png" alt="Los FIFAS" />
+
+      <h1 id="login-title">Iniciar sesión</h1>
+      <p class="login-card__lead">Entra a tu cuenta y vístete para ganar.</p>
+
+      <form class="login-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <label class="login-field">
+          <span class="sr-only">Usuario o correo electrónico</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <circle cx="12" cy="8" r="3.2" />
+            <path d="M5 19.2c.8-3.2 3.5-5.2 7-5.2s6.2 2 7 5.2" />
+          </svg>
+          <input
+            formControlName="email"
+            type="text"
+            autocomplete="username"
+            placeholder="Usuario / correo electrónico"
+          />
+        </label>
+
+        <label class="login-field">
+          <span class="sr-only">Contraseña</span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+            <rect x="5" y="11" width="14" height="9" rx="2" />
+            <path d="M8 11V8a4 4 0 0 1 8 0v3" />
+          </svg>
+          <input
+            formControlName="password"
+            [type]="showPassword() ? 'text' : 'password'"
+            autocomplete="current-password"
+            placeholder="Contraseña"
+          />
+          <button type="button" class="login-field__toggle" (click)="togglePassword()">
+            {{ showPassword() ? 'Ocultar' : 'Mostrar' }}
+          </button>
+        </label>
+
+        @if (error()) {
+          <p class="login-form__error" role="alert">{{ error() }}</p>
+        }
+
+        <button type="submit" class="login-form__submit">Iniciar sesión</button>
+      </form>
+
+      <div class="login-card__links">
+        <button type="button">¿Olvidaste tu contraseña?</button>
+      </div>
+    </section>
+  </main>
+</div>
