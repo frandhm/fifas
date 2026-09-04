@@ -107,6 +107,17 @@
   color: #fff;
 }
 
+.product-detail__customize {
+  border: 1px solid rgb(212 175 55 / 0.7) !important;
+  background: rgb(212 175 55 / 0.1) !important;
+  color: #f3e6b0 !important;
+  transition: background 0.2s !important;
+}
+
+.product-detail__customize:hover {
+  background: rgb(212 175 55 / 0.2) !important;
+}
+
 .product-detail__actions a {
   border: 1px solid #7aa2ff;
   color: #c9d8ff;

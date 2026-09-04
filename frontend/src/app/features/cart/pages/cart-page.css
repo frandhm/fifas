@@ -183,6 +183,30 @@
   font-weight: 700;
 }
 
+.cart__item-badges {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  margin-bottom: 0.2rem;
+}
+
+.cart__badge {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: rgb(122 162 255 / 0.12);
+  border: 1px solid rgb(122 162 255 / 0.3);
+  color: #c9d8ff;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
+.cart__badge--gold {
+  background: rgb(212 175 55 / 0.15);
+  border-color: rgb(212 175 55 / 0.4);
+  color: #f3e6b0;
+}
+
 .cart__item-unit {
   margin: 0;
   color: #8ba0be;

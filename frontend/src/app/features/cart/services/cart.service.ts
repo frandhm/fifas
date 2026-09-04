@@ -6,6 +6,23 @@ export interface CartLine {
   productId: string;
   quantity: number;
   size?: string;
+  playerName?: string;
+  dorsal?: number;
+}
+
+function lineMatches(
+  line: CartLine,
+  productId: string,
+  size?: string,
+  playerName?: string,
+  dorsal?: number,
+): boolean {
+  return (
+    line.productId === productId &&
+    line.size === size &&
+    line.playerName === playerName &&
+    line.dorsal === dorsal
+  );
 }
 
 @Injectable({ providedIn: 'root' })
@@ -15,38 +32,42 @@ export class CartService {
   readonly items = this.lines.asReadonly();
   readonly count = computed(() => this.lines().reduce((sum, line) => sum + line.quantity, 0));
 
-  add(productId: string, size?: string): void {
+  add(productId: string, size?: string, playerName?: string, dorsal?: number): void {
     this.lines.update((current) => {
-      const existing = current.find(
-        (line) => line.productId === productId && line.size === size,
-      );
+      const existing = current.find((l) => lineMatches(l, productId, size, playerName, dorsal));
       if (!existing) {
-        return [...current, { productId, quantity: 1, size }];
+        return [...current, { productId, quantity: 1, size, playerName, dorsal }];
       }
-      return current.map((line) =>
-        line.productId === productId && line.size === size
-          ? { ...line, quantity: line.quantity + 1 }
-          : line,
+      return current.map((l) =>
+        lineMatches(l, productId, size, playerName, dorsal)
+          ? { ...l, quantity: l.quantity + 1 }
+          : l,
       );
     });
     this.persist();
   }
 
-  remove(productId: string, size?: string): void {
+  remove(productId: string, size?: string, playerName?: string, dorsal?: number): void {
     this.lines.update((current) =>
-      current.filter((line) => !(line.productId === productId && line.size === size)),
+      current.filter((l) => !lineMatches(l, productId, size, playerName, dorsal)),
     );
     this.persist();
   }
 
-  updateQuantity(productId: string, quantity: number, size?: string): void {
+  updateQuantity(
+    productId: string,
+    quantity: number,
+    size?: string,
+    playerName?: string,
+    dorsal?: number,
+  ): void {
     if (quantity <= 0) {
-      this.remove(productId, size);
+      this.remove(productId, size, playerName, dorsal);
       return;
     }
     this.lines.update((current) =>
-      current.map((line) =>
-        line.productId === productId && line.size === size ? { ...line, quantity } : line,
+      current.map((l) =>
+        lineMatches(l, productId, size, playerName, dorsal) ? { ...l, quantity } : l,
       ),
     );
     this.persist();

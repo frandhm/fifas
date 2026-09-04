@@ -17,9 +17,7 @@ export class CartPage {
     this.cart.items()
       .map((line) => {
         const product = this.catalog.byId(line.productId);
-        if (!product) {
-          return null;
-        }
+        if (!product) return null;
         return { ...line, product, subtotal: product.price * line.quantity };
       })
       .filter((line) => line !== null),
@@ -32,26 +30,34 @@ export class CartPage {
     return `$${price.toFixed(2)}`;
   }
 
-  increase(productId: string, size?: string): void {
+  increase(productId: string, size?: string, playerName?: string, dorsal?: number): void {
     const line = this.cart.items().find(
-      (l) => l.productId === productId && l.size === size,
+      (l) =>
+        l.productId === productId &&
+        l.size === size &&
+        l.playerName === playerName &&
+        l.dorsal === dorsal,
     );
     if (line) {
-      this.cart.updateQuantity(productId, line.quantity + 1, size);
+      this.cart.updateQuantity(productId, line.quantity + 1, size, playerName, dorsal);
     }
   }
 
-  decrease(productId: string, size?: string): void {
+  decrease(productId: string, size?: string, playerName?: string, dorsal?: number): void {
     const line = this.cart.items().find(
-      (l) => l.productId === productId && l.size === size,
+      (l) =>
+        l.productId === productId &&
+        l.size === size &&
+        l.playerName === playerName &&
+        l.dorsal === dorsal,
     );
     if (line) {
-      this.cart.updateQuantity(productId, line.quantity - 1, size);
+      this.cart.updateQuantity(productId, line.quantity - 1, size, playerName, dorsal);
     }
   }
 
-  remove(productId: string, size?: string): void {
-    this.cart.remove(productId, size);
+  remove(productId: string, size?: string, playerName?: string, dorsal?: number): void {
+    this.cart.remove(productId, size, playerName, dorsal);
   }
 
   clear(): void {

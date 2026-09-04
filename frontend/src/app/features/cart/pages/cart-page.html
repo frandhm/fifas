@@ -29,38 +29,43 @@
           </div>
 
           <ul class="cart__list">
-            @for (line of lines(); track line.product.id + (line.size ?? '')) {
+            @for (line of lines(); track line.product.id + (line.size ?? '') + (line.playerName ?? '') + (line.dorsal ?? '')) {
               <li class="cart__item">
-                <!-- Miniatura de la camiseta -->
+                <!-- Miniatura -->
                 <div
                   class="cart__kit"
                   [style.--accent]="line.product.accent"
                   [style.--stripe]="line.product.stripe"
                 ></div>
 
-                <!-- Info del producto -->
+                <!-- Info -->
                 <div class="cart__item-info">
                   <h2>{{ line.product.name }}</h2>
-                  @if (line.size) {
-                    <span class="cart__item-size">Talla: {{ line.size }}</span>
-                  }
+                  <div class="cart__item-badges">
+                    @if (line.size) {
+                      <span class="cart__badge">Talla: {{ line.size }}</span>
+                    }
+                    @if (line.playerName) {
+                      <span class="cart__badge cart__badge--gold">{{ line.playerName }} #{{ line.dorsal }}</span>
+                    }
+                  </div>
                   <p class="cart__item-unit">{{ priceLabel(line.product.price) }} / ud.</p>
                 </div>
 
-                <!-- Control de cantidad -->
+                <!-- Cantidad -->
                 <div class="cart__qty">
                   <button
                     type="button"
                     class="cart__qty-btn"
                     aria-label="Reducir cantidad"
-                    (click)="decrease(line.product.id, line.size)"
+                    (click)="decrease(line.product.id, line.size, line.playerName, line.dorsal)"
                   >−</button>
                   <span class="cart__qty-value">{{ line.quantity }}</span>
                   <button
                     type="button"
                     class="cart__qty-btn"
                     aria-label="Aumentar cantidad"
-                    (click)="increase(line.product.id, line.size)"
+                    (click)="increase(line.product.id, line.size, line.playerName, line.dorsal)"
                   >+</button>
                 </div>
 
@@ -72,7 +77,7 @@
                   type="button"
                   class="cart__remove-btn"
                   aria-label="Quitar artículo"
-                  (click)="remove(line.product.id, line.size)"
+                  (click)="remove(line.product.id, line.size, line.playerName, line.dorsal)"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6 6 18M6 6l12 12"/>
@@ -88,9 +93,13 @@
           <h2>Resumen del pedido</h2>
 
           <div class="cart__summary-lines">
-            @for (line of lines(); track line.product.id + (line.size ?? '')) {
+            @for (line of lines(); track line.product.id + (line.size ?? '') + (line.playerName ?? '')) {
               <div class="cart__summary-row">
-                <span>{{ line.product.name }}{{ line.size ? ' · ' + line.size : '' }} × {{ line.quantity }}</span>
+                <span>
+                  {{ line.product.name }}
+                  @if (line.playerName) { · {{ line.playerName }} #{{ line.dorsal }} }
+                  × {{ line.quantity }}
+                </span>
                 <span>{{ priceLabel(line.subtotal) }}</span>
               </div>
             }

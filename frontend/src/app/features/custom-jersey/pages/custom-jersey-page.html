@@ -1,0 +1,185 @@
+<main class="customizer">
+  <img class="customizer__bg" src="/images/stadium.jpg" alt="" />
+  <div class="customizer__overlay"></div>
+
+  <div class="customizer__content">
+
+    @if (product(); as item) {
+
+      <a [routerLink]="['/catalogo', item.id]" class="customizer__back">← Volver al producto</a>
+
+      <div class="customizer__layout">
+
+        <!-- ══════════ PREVIEW DE LA CAMISETA ══════════ -->
+        <div class="customizer__preview-col">
+
+          <div class="customizer__preview-card">
+            <p class="customizer__preview-label">Vista previa en tiempo real</p>
+
+            <svg
+              class="customizer__jersey-svg"
+              viewBox="0 0 200 240"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-label="Vista previa de la camiseta"
+            >
+              <defs>
+                <!-- Patrón de rayas usando los colores del producto -->
+                <pattern id="kit-stripes" x="0" y="0" width="26" height="240" patternUnits="userSpaceOnUse">
+                  <rect x="0"  y="0" width="15" height="240" [attr.fill]="item.accent" />
+                  <rect x="15" y="0" width="11" height="240" [attr.fill]="item.stripe" />
+                </pattern>
+                <!-- Forma de la camiseta -->
+                <clipPath id="jersey-body">
+                  <path d="M65,8 Q100,34 135,8 L170,4 L200,50 L186,100 L152,84 L152,235 L48,235 L48,84 L14,100 L0,50 L30,4 Z" />
+                </clipPath>
+                <!-- Sombra -->
+                <filter id="jersey-glow" x="-25%" y="-25%" width="150%" height="150%">
+                  <feDropShadow dx="0" dy="6" stdDeviation="12" flood-color="rgba(0,0,0,0.65)" />
+                </filter>
+              </defs>
+
+              <!-- Cuerpo de la camiseta con rayas -->
+              <g filter="url(#jersey-glow)">
+                <rect x="0" y="0" width="200" height="240"
+                  fill="url(#kit-stripes)"
+                  clip-path="url(#jersey-body)"
+                />
+                <!-- Borde/costura -->
+                <path d="M65,8 Q100,34 135,8 L170,4 L200,50 L186,100 L152,84 L152,235 L48,235 L48,84 L14,100 L0,50 L30,4 Z"
+                  fill="none"
+                  stroke="rgba(0,0,0,0.22)"
+                  stroke-width="1.5"
+                  clip-path="url(#jersey-body)"
+                />
+                <!-- Cuello en V -->
+                <path d="M76,14 Q100,42 124,14"
+                  fill="none"
+                  [attr.stroke]="item.stripe"
+                  stroke-width="5"
+                  clip-path="url(#jersey-body)"
+                />
+              </g>
+
+              <!-- Nombre del jugador -->
+              <text
+                x="100"
+                y="148"
+                text-anchor="middle"
+                class="customizer__jersey-name"
+              >{{ playerNameDisplay() }}</text>
+
+              <!-- Dorsal -->
+              <text
+                x="100"
+                y="218"
+                text-anchor="middle"
+                class="customizer__jersey-number"
+              >{{ dorsal() }}</text>
+            </svg>
+
+            <p class="customizer__jersey-product-name">{{ item.name }}</p>
+          </div>
+
+        </div>
+
+        <!-- ══════════ PANEL DE PERSONALIZACIÓN ══════════ -->
+        <div class="customizer__form-col">
+          <div class="customizer__form">
+
+            <div class="customizer__form-header">
+              <h1>Personaliza tu camiseta</h1>
+              <p class="customizer__form-sub">Solo nombre y dorsal — tú eliges cómo te identificas en el campo.</p>
+            </div>
+
+            <!-- NOMBRE -->
+            <div class="customizer__field">
+              <label for="player-name" class="customizer__label">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2 2H6a3 3 0 0 0-3 3v1h10v-1a3 3 0 0 0-3-3Z"/></svg>
+                Nombre en la espalda
+              </label>
+              <div class="customizer__input-wrap">
+                <input
+                  id="player-name"
+                  type="text"
+                  class="customizer__input"
+                  [value]="playerName()"
+                  (input)="onNameInput($event)"
+                  placeholder="Ej: GARCÍA"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+                <span
+                  class="customizer__char-count"
+                  [class.customizer__char-count--warn]="nameLength() >= 10"
+                >{{ nameLength() }}/12</span>
+              </div>
+              <p class="customizer__hint">Máx. 12 caracteres · se mostrará en mayúsculas</p>
+            </div>
+
+            <!-- DORSAL -->
+            <div class="customizer__field">
+              <label for="dorsal-input" class="customizer__label">
+                <svg viewBox="0 0 16 16" fill="currentColor"><path d="M2 2h12v12H2z" rx="2"/></svg>
+                Dorsal (0 – 99)
+              </label>
+              <div class="customizer__dorsal-row">
+                <button
+                  type="button"
+                  class="customizer__dorsal-btn"
+                  aria-label="Reducir dorsal"
+                  (click)="decreaseDorsal()"
+                >−</button>
+                <input
+                  id="dorsal-input"
+                  type="number"
+                  class="customizer__dorsal-input"
+                  [value]="dorsal()"
+                  (input)="onDorsalInput($event)"
+                  min="0"
+                  max="99"
+                />
+                <button
+                  type="button"
+                  class="customizer__dorsal-btn"
+                  aria-label="Aumentar dorsal"
+                  (click)="increaseDorsal()"
+                >+</button>
+              </div>
+            </div>
+
+            <!-- RESUMEN DE PRECIO -->
+            <div class="customizer__price-box">
+              <div>
+                <span class="customizer__price-label">Precio con personalización</span>
+                <p class="customizer__price-note">Impresión incluida</p>
+              </div>
+              <span class="customizer__price">{{ priceLabel(item.price) }}</span>
+            </div>
+
+            <!-- ACCIÓN PRINCIPAL -->
+            <button type="button" class="customizer__add-btn" (click)="addToCart()">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M6 7h15l-1.5 8.5H8L6 7Z" />
+                <path d="M6 7 5 4H2" />
+                <circle cx="9" cy="20" r="1.3" />
+                <circle cx="18" cy="20" r="1.3" />
+              </svg>
+              Añadir al carrito personalizada
+            </button>
+
+            <a routerLink="/catalogo" class="customizer__continue">Ver más camisetas →</a>
+
+          </div>
+        </div>
+
+      </div>
+
+    } @else {
+      <div class="customizer__not-found">
+        <p>No encontramos esa camiseta.</p>
+        <a routerLink="/catalogo" class="customizer__continue">Ver catálogo →</a>
+      </div>
+    }
+
+  </div>
+</main>

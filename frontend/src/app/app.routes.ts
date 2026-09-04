@@ -32,6 +32,13 @@ export const routes: Routes = [
           ),
       },
       {
+        path: 'personalizar/:id',
+        loadComponent: () =>
+          import('./features/custom-jersey/pages/custom-jersey-page').then(
+            (m) => m.CustomJerseyPage,
+          ),
+      },
+      {
         path: 'carrito',
         loadComponent: () => import('./features/cart/pages/cart-page').then((m) => m.CartPage),
       },
