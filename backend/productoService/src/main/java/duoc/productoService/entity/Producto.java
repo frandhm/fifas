@@ -1,38 +1,53 @@
 package duoc.productoService.entity;
 
 import jakarta.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "productos")
 public class Producto {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String id;
 
-    private String nombre;
-    private String equipo;
-    private String talla;
-    private Double precio;
-    private Integer stock;
+    private String name;
+    private Double price;
+    private String accent;
+    private String stripe;
+
+    @Enumerated(EnumType.STRING)
+    private ProductCategory category;
+
+    private String description;
+
+    @ElementCollection
+    @CollectionTable(name = "producto_sizes", joinColumns = @JoinColumn(name = "producto_id"))
+    @Column(name = "size")
+    private List<String> sizes;
 
     public Producto() {}
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public String getEquipo() { return equipo; }
-    public void setEquipo(String equipo) { this.equipo = equipo; }
+    public Double getPrice() { return price; }
+    public void setPrice(Double price) { this.price = price; }
 
-    public String getTalla() { return talla; }
-    public void setTalla(String talla) { this.talla = talla; }
+    public String getAccent() { return accent; }
+    public void setAccent(String accent) { this.accent = accent; }
 
-    public Double getPrecio() { return precio; }
-    public void setPrecio(Double precio) { this.precio = precio; }
+    public String getStripe() { return stripe; }
+    public void setStripe(String stripe) { this.stripe = stripe; }
 
-    public Integer getStock() { return stock; }
-    public void setStock(Integer stock) { this.stock = stock; }
+    public ProductCategory getCategory() { return category; }
+    public void setCategory(ProductCategory category) { this.category = category; }
+
+    public String getDescription() { return description; }
+    public void setDescription(String description) { this.description = description; }
+
+    public List<String> getSizes() { return sizes; }
+    public void setSizes(List<String> sizes) { this.sizes = sizes; }
 }
