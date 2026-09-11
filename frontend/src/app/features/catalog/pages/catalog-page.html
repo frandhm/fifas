@@ -4,6 +4,9 @@
 
   <div class="catalog__content">
     <header class="catalog__header">
+    @if (catalogError()) {
+      <p role="status">{{ catalogError() }}</p>
+    }
       <h1>Camisetas</h1>
       <p>Elige tu equipación. Misma colección que ves en inicio.</p>
       <app-catalog-filters [active]="category()" (changeFilter)="setCategory($event)" />

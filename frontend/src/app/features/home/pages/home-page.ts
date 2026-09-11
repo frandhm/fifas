@@ -11,6 +11,7 @@ import { CatalogService } from '../../catalog/services/catalog.service';
 })
 export class HomePage {
   private readonly catalog = inject(CatalogService);
+  readonly catalogError = this.catalog.loadError;
   private readonly cart = inject(CartService);
 
   readonly products = this.catalog.list();

@@ -72,15 +72,18 @@ export class CatalogService {
   private readonly http = inject(HttpClient);
   private readonly productsSignal = signal<Product[]>(PRODUCTS);
 
+  readonly loadError = signal<string | null>(null);
+
   constructor() {
     this.loadFromBackend();
   }
 
   loadFromBackend(): void {
+    this.loadError.set(null);
     this.http.get<Product[]>(`${environment.apiBaseUrl}/api/productos`)
       .pipe(
-        catchError((err) => {
-          console.warn('No se pudo conectar a la API RDS en AWS API Gateway, usando datos de respaldo:', err);
+        catchError(() => {
+          this.loadError.set('No pudimos cargar el catálogo en línea. Mostramos productos de demostración.');
           return of(PRODUCTS);
         })
       )

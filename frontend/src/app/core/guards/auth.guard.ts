@@ -1,15 +1,23 @@
 import { inject } from '@angular/core';
 import { CanActivateFn } from '@angular/router';
-import { MsalService } from '@azure/msal-angular';
+import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
+import { InteractionStatus } from '@azure/msal-browser';
+import { filter, map, take } from 'rxjs';
 
-export const authGuard: CanActivateFn = () => {
+export const authGuard: CanActivateFn = (_route, state) => {
   const msal = inject(MsalService);
-  const isLoggedIn = msal.instance.getAllAccounts().length > 0;
-
-  if (!isLoggedIn) {
-    msal.loginRedirect({ scopes: ['User.Read'], prompt: 'select_account' });
-    return false;
-  }
-
-  return true;
+  const broadcast = inject(MsalBroadcastService);
+  return broadcast.inProgress$.pipe(
+    filter((status) => status === InteractionStatus.None),
+    take(1),
+    map(() => {
+      const account = msal.instance.getActiveAccount() ?? msal.instance.getAllAccounts()[0];
+      if (account) {
+        msal.instance.setActiveAccount(account);
+        return true;
+      }
+      msal.loginRedirect({ scopes: ['openid', 'profile'], redirectStartPage: state.url });
+      return false;
+    }),
+  );
 };
