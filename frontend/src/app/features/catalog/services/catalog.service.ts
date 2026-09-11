@@ -1,5 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { catchError, of } from 'rxjs';
 import { ADULT_SIZES, KIDS_SIZES, Product } from '../../../core/models/product';
+import { environment } from '../../../../environment/environment';
 
 const PRODUCTS: Product[] = [
   {
@@ -66,11 +69,33 @@ const PRODUCTS: Product[] = [
 
 @Injectable({ providedIn: 'root' })
 export class CatalogService {
+  private readonly http = inject(HttpClient);
+  private readonly productsSignal = signal<Product[]>(PRODUCTS);
+
+  constructor() {
+    this.loadFromBackend();
+  }
+
+  loadFromBackend(): void {
+    this.http.get<Product[]>(`${environment.apiBaseUrl}/api/productos`)
+      .pipe(
+        catchError((err) => {
+          console.warn('No se pudo conectar a la API RDS en AWS API Gateway, usando datos de respaldo:', err);
+          return of(PRODUCTS);
+        })
+      )
+      .subscribe((data) => {
+        if (data && data.length > 0) {
+          this.productsSignal.set(data);
+        }
+      });
+  }
+
   list(): Product[] {
-    return PRODUCTS;
+    return this.productsSignal();
   }
 
   byId(id: string): Product | undefined {
-    return PRODUCTS.find((product) => product.id === id);
+    return this.productsSignal().find((product) => product.id === id);
   }
 }

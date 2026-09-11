@@ -8,6 +8,5 @@ export const environment = {
     // Solo si tu API pide un scope específico (ej. api://TU_API_ID/access_as_user)
     protectedResourceScopes: ['api://PON_AQUI_TU_API_ID/access_as_user'],
   },
-  // URL base de tu backend (BFF o API Gateway) - ajusta cuando la tengas lista
-  apiBaseUrl: 'http://localhost:8080',
+  apiBaseUrl: 'https://47o1qkg4d0.execute-api.us-east-1.amazonaws.com',
 };
