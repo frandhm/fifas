@@ -19,12 +19,12 @@ public class ProxyController {
 
     // Aqui defines a que microservicio corresponde cada primer segmento de la ruta
     private static final Map<String, String> RUTAS = Map.of(
-            "usuarios", "http://localhost:8082",
-            "productos", "http://localhost:8083",
-            "carritos", "http://localhost:8084",
-            "solicitudes", "http://localhost:8087",
-            "notificaciones", "http://localhost:8086",
-            "mensajes", "http://localhost:8088"
+        "usuarios", "http://172.31.24.223:8082",
+        "productos", "http://172.31.24.223:8083",
+        "carritos", "http://172.31.24.223:8084",
+        "solicitudes", "http://172.31.95.160:8087",
+        "notificaciones", "http://172.31.95.160:8086",
+        "mensajes", "http://172.31.95.160:8088"
     );
 
     public ProxyController(WebClient.Builder webClientBuilder) {

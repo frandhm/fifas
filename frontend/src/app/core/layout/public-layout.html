@@ -12,12 +12,12 @@
     </nav>
 
     <div class="public-header__actions">
-      <a routerLink="/perfil" aria-label="Perfil">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="8" r="3.2" />
-          <path d="M5 19.2c.8-3.2 3.5-5.2 7-5.2s6.2 2 7 5.2" />
-        </svg>
-      </a>
+      <button type="button" (click)="goToProfile()" aria-label="Perfil" class="public-header__profile-btn">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    <circle cx="12" cy="8" r="3.2" />
+    <path d="M5 19.2c.8-3.2 3.5-5.2 7-5.2s6.2 2 7 5.2" />
+  </svg>
+</button>
       <a routerLink="/carrito" class="public-header__cart" aria-label="Carrito">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M6 7h15l-1.5 8.5H8L6 7Z" />
