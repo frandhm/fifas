@@ -1,5 +1,5 @@
 import { Component, computed, inject } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 import { TransactionsService } from '../services/transactions.service';
 
@@ -13,7 +13,6 @@ import { TransactionsService } from '../services/transactions.service';
 export class TransactionsPage {
   private readonly authService = inject(AuthService);
   private readonly transactionsService = inject(TransactionsService);
-  private readonly router = inject(Router);
 
   readonly user = this.authService.currentUser;
   readonly transactions = this.transactionsService.userTransactions;
@@ -45,6 +44,5 @@ export class TransactionsPage {
 
   onLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/']);
   }
 }

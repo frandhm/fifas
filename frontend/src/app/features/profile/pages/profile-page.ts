@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
@@ -11,7 +11,6 @@ import { AuthService } from '../../auth/services/auth.service';
 })
 export class ProfilePage {
   private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
 
   // Form signals initialized from AuthService
   readonly user = this.authService.currentUser;
@@ -46,6 +45,5 @@ export class ProfilePage {
 
   onLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/']);
   }
 }

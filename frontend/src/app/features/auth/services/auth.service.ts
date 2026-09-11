@@ -1,4 +1,5 @@
-import { Injectable, computed, signal } from '@angular/core';
+import { Injectable, computed, inject, signal } from '@angular/core';
+import { MsalService } from '@azure/msal-angular';
 
 const STORAGE_KEY = 'fifas.auth.user';
 
@@ -11,6 +12,7 @@ export interface AuthUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private readonly msal = inject(MsalService);
   private readonly user = signal<AuthUser | null>(this.readStoredUser());
 
   readonly currentUser = this.user.asReadonly();
@@ -47,6 +49,14 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem(STORAGE_KEY);
     this.user.set(null);
+
+    const account = this.msal.instance.getActiveAccount()
+      ?? this.msal.instance.getAllAccounts()[0];
+
+    void this.msal.logoutRedirect({
+      account,
+      postLogoutRedirectUri: window.location.origin,
+    });
   }
 
   private readStoredUser(): AuthUser | null {
