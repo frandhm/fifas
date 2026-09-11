@@ -1,0 +1,381 @@
+/* ─── Shell ──────────────────────────────────────────────── */
+.customizer {
+  position: relative;
+  overflow: hidden;
+  min-height: 100%;
+  padding: 1.5rem 1rem 3rem;
+  color: #eef3fb;
+}
+
+.customizer__bg,
+.customizer__overlay {
+  position: absolute;
+  inset: 0;
+}
+
+.customizer__bg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.customizer__overlay {
+  background:
+    radial-gradient(ellipse at top, rgb(7 16 31 / 0.5), rgb(7 16 31 / 0.88)),
+    linear-gradient(180deg, rgb(7 16 31 / 0.6), rgb(7 16 31 / 0.96));
+}
+
+.customizer__content {
+  position: relative;
+  z-index: 1;
+  max-width: 72rem;
+  margin: 0 auto;
+}
+
+/* ─── Back link ──────────────────────────────────────────── */
+.customizer__back {
+  display: inline-block;
+  margin-bottom: 1.2rem;
+  color: #f3e6b0;
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 700;
+  transition: opacity 0.18s;
+}
+
+.customizer__back:hover {
+  opacity: 0.72;
+}
+
+/* ─── Two-column layout ──────────────────────────────────── */
+.customizer__layout {
+  display: grid;
+  gap: 2rem;
+  align-items: start;
+}
+
+@media (min-width: 820px) {
+  .customizer__layout {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ─── Preview column ─────────────────────────────────────── */
+.customizer__preview-col {
+  display: flex;
+  justify-content: center;
+}
+
+.customizer__preview-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.8rem 2rem;
+  border: 1px solid rgb(212 175 55 / 0.28);
+  border-radius: 1.4rem;
+  background: rgb(8 18 40 / 0.8);
+  width: 100%;
+  max-width: 340px;
+}
+
+.customizer__preview-label {
+  margin: 0;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #8ba0be;
+  font-weight: 700;
+}
+
+/* ─── Jersey SVG ─────────────────────────────────────────── */
+.customizer__jersey-svg {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  overflow: visible; /* allow drop shadow to show */
+}
+
+/* Nombre del jugador encima de la camiseta */
+.customizer__jersey-name {
+  font-size: 17px;
+  font-weight: 900;
+  fill: #f3e6b0;
+  font-family: 'Impact', 'Arial Narrow', Arial, sans-serif;
+  letter-spacing: 3px;
+  paint-order: stroke fill;
+  stroke: rgba(0, 0, 0, 0.55);
+  stroke-width: 3px;
+  text-transform: uppercase;
+}
+
+/* Número dorsal */
+.customizer__jersey-number {
+  font-size: 58px;
+  font-weight: 900;
+  fill: #f3e6b0;
+  font-family: 'Impact', 'Arial Narrow', Arial, sans-serif;
+  paint-order: stroke fill;
+  stroke: rgba(0, 0, 0, 0.45);
+  stroke-width: 5px;
+}
+
+.customizer__jersey-product-name {
+  margin: 0;
+  font-size: 0.78rem;
+  color: #8ba0be;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* ─── Form column ────────────────────────────────────────── */
+.customizer__form {
+  padding: 1.8rem;
+  border: 1px solid rgb(212 175 55 / 0.3);
+  border-radius: 1.4rem;
+  background: rgb(8 18 40 / 0.92);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Header */
+.customizer__form-header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.customizer__form h1 {
+  margin: 0;
+  font-size: clamp(1.15rem, 3vw, 1.55rem);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #f3e6b0;
+}
+
+.customizer__form-sub {
+  margin: 0;
+  font-size: 0.8rem;
+  color: #8ba0be;
+  line-height: 1.5;
+}
+
+/* ─── Field ──────────────────────────────────────────────── */
+.customizer__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.customizer__label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: #f3e6b0;
+}
+
+.customizer__label svg {
+  width: 0.9rem;
+  height: 0.9rem;
+  opacity: 0.8;
+}
+
+/* ─── Text input ─────────────────────────────────────────── */
+.customizer__input-wrap {
+  position: relative;
+}
+
+.customizer__input {
+  width: 100%;
+  padding: 0.75rem 3.8rem 0.75rem 1rem;
+  border: 1px solid rgb(212 175 55 / 0.35);
+  border-radius: 0.7rem;
+  background: rgb(11 23 48 / 0.9);
+  color: #eef3fb;
+  font-size: 1.05rem;
+  font-weight: 700;
+  box-sizing: border-box;
+  outline: none;
+  letter-spacing: 0.04em;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.customizer__input::placeholder {
+  color: #3d5270;
+  font-weight: 400;
+}
+
+.customizer__input:focus {
+  border-color: rgb(212 175 55 / 0.7);
+  box-shadow: 0 0 0 3px rgb(212 175 55 / 0.12);
+}
+
+.customizer__char-count {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #4a607e;
+  pointer-events: none;
+  transition: color 0.2s;
+}
+
+.customizer__char-count--warn {
+  color: #f3e6b0;
+}
+
+/* ─── Dorsal control ─────────────────────────────────────── */
+.customizer__dorsal-row {
+  display: flex;
+  align-items: stretch;
+  max-width: 180px;
+  border: 1px solid rgb(212 175 55 / 0.35);
+  border-radius: 0.7rem;
+  overflow: hidden;
+  background: rgb(11 23 48 / 0.9);
+}
+
+.customizer__dorsal-btn {
+  width: 3rem;
+  flex-shrink: 0;
+  border: none;
+  background: rgb(212 175 55 / 0.1);
+  color: #f3e6b0;
+  font-size: 1.3rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.customizer__dorsal-btn:hover {
+  background: rgb(212 175 55 / 0.25);
+}
+
+.customizer__dorsal-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  color: #eef3fb;
+  font-size: 1.4rem;
+  font-weight: 900;
+  text-align: center;
+  padding: 0.5rem 0;
+  outline: none;
+  -moz-appearance: textfield;
+}
+
+.customizer__dorsal-input::-webkit-outer-spin-button,
+.customizer__dorsal-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ─── Hint ───────────────────────────────────────────────── */
+.customizer__hint {
+  margin: 0;
+  font-size: 0.7rem;
+  color: #3d5270;
+}
+
+/* ─── Price box ──────────────────────────────────────────── */
+.customizer__price-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid rgb(212 175 55 / 0.22);
+  border-radius: 0.8rem;
+  background: rgb(212 175 55 / 0.05);
+}
+
+.customizer__price-label {
+  display: block;
+  font-size: 0.8rem;
+  color: #d5deea;
+  font-weight: 600;
+}
+
+.customizer__price-note {
+  margin: 0.2rem 0 0;
+  font-size: 0.68rem;
+  color: #4a607e;
+}
+
+.customizer__price {
+  font-size: 1.45rem;
+  font-weight: 900;
+  color: #f3e6b0;
+  white-space: nowrap;
+}
+
+/* ─── CTA button ─────────────────────────────────────────── */
+.customizer__add-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  padding: 1rem;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #16a34a 0%, #15803d 100%);
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  transition: opacity 0.2s, transform 0.15s;
+}
+
+.customizer__add-btn svg {
+  width: 1.1rem;
+  height: 1.1rem;
+  flex-shrink: 0;
+}
+
+.customizer__add-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+.customizer__add-btn:active {
+  transform: translateY(0);
+}
+
+/* ─── Secondary link ─────────────────────────────────────── */
+.customizer__continue {
+  display: block;
+  text-align: center;
+  color: #7aa2ff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.customizer__continue:hover {
+  color: #c9d8ff;
+}
+
+/* ─── Not found state ────────────────────────────────────── */
+.customizer__not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.2rem;
+  padding: 3rem 1.5rem;
+  border: 1px solid rgb(212 175 55 / 0.25);
+  border-radius: 1.2rem;
+  background: rgb(8 18 40 / 0.88);
+  text-align: center;
+  color: #8ba0be;
+}

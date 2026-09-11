@@ -1,0 +1,129 @@
+<main class="cart">
+  <img class="cart__bg" src="/images/stadium.jpg" alt="" />
+  <div class="cart__overlay"></div>
+
+  <div class="cart__content">
+    <h1>Carrito</h1>
+
+    @if (lines().length === 0) {
+      <div class="cart__empty">
+        <svg class="cart__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 7h15l-1.5 8.5H8L6 7Z" />
+          <path d="M6 7 5 4H2" />
+          <circle cx="9" cy="20" r="1.3" />
+          <circle cx="18" cy="20" r="1.3" />
+        </svg>
+        <p>Tu carrito está vacío</p>
+        <a routerLink="/catalogo" class="cart__cta-link">Ver camisetas →</a>
+      </div>
+    } @else {
+      <div class="cart__layout">
+
+        <!-- LISTA DE PRODUCTOS -->
+        <section class="cart__items">
+          <div class="cart__items-header">
+            <span>{{ count() }} {{ count() === 1 ? 'artículo' : 'artículos' }}</span>
+            <button type="button" class="cart__clear-btn" (click)="clear()">
+              Vaciar carrito
+            </button>
+          </div>
+
+          <ul class="cart__list">
+            @for (line of lines(); track line.product.id + (line.size ?? '') + (line.playerName ?? '') + (line.dorsal ?? '')) {
+              <li class="cart__item">
+                <!-- Miniatura -->
+                <div
+                  class="cart__kit"
+                  [style.--accent]="line.product.accent"
+                  [style.--stripe]="line.product.stripe"
+                ></div>
+
+                <!-- Info -->
+                <div class="cart__item-info">
+                  <h2>{{ line.product.name }}</h2>
+                  <div class="cart__item-badges">
+                    @if (line.size) {
+                      <span class="cart__badge">Talla: {{ line.size }}</span>
+                    }
+                    @if (line.playerName) {
+                      <span class="cart__badge cart__badge--gold">{{ line.playerName }} #{{ line.dorsal }}</span>
+                    }
+                  </div>
+                  <p class="cart__item-unit">{{ priceLabel(line.product.price) }} / ud.</p>
+                </div>
+
+                <!-- Cantidad -->
+                <div class="cart__qty">
+                  <button
+                    type="button"
+                    class="cart__qty-btn"
+                    aria-label="Reducir cantidad"
+                    (click)="decrease(line.product.id, line.size, line.playerName, line.dorsal)"
+                  >−</button>
+                  <span class="cart__qty-value">{{ line.quantity }}</span>
+                  <button
+                    type="button"
+                    class="cart__qty-btn"
+                    aria-label="Aumentar cantidad"
+                    (click)="increase(line.product.id, line.size, line.playerName, line.dorsal)"
+                  >+</button>
+                </div>
+
+                <!-- Subtotal -->
+                <strong class="cart__item-subtotal">{{ priceLabel(line.subtotal) }}</strong>
+
+                <!-- Quitar -->
+                <button
+                  type="button"
+                  class="cart__remove-btn"
+                  aria-label="Quitar artículo"
+                  (click)="remove(line.product.id, line.size, line.playerName, line.dorsal)"
+                >
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 6 6 18M6 6l12 12"/>
+                  </svg>
+                </button>
+              </li>
+            }
+          </ul>
+        </section>
+
+        <!-- RESUMEN -->
+        <aside class="cart__summary">
+          <h2>Resumen del pedido</h2>
+
+          <div class="cart__summary-lines">
+            @for (line of lines(); track line.product.id + (line.size ?? '') + (line.playerName ?? '')) {
+              <div class="cart__summary-row">
+                <span>
+                  {{ line.product.name }}
+                  @if (line.playerName) { · {{ line.playerName }} #{{ line.dorsal }} }
+                  × {{ line.quantity }}
+                </span>
+                <span>{{ priceLabel(line.subtotal) }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="cart__summary-divider"></div>
+
+          <div class="cart__summary-total">
+            <span>Total</span>
+            <strong>{{ priceLabel(total()) }}</strong>
+          </div>
+
+          <button type="button" class="cart__checkout-btn" disabled>
+            Proceder al pago
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M5 12h14M13 6l6 6-6 6"/>
+            </svg>
+          </button>
+          <p class="cart__checkout-note">El pago estará disponible próximamente.</p>
+
+          <a routerLink="/catalogo" class="cart__continue">← Seguir comprando</a>
+        </aside>
+
+      </div>
+    }
+  </div>
+</main>

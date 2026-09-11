@@ -1,0 +1,22 @@
+<main class="catalog">
+  <img class="catalog__bg" src="/images/stadium.jpg" alt="" />
+  <div class="catalog__overlay"></div>
+
+  <div class="catalog__content">
+    <header class="catalog__header">
+      <h1>Camisetas</h1>
+      <p>Elige tu equipación. Misma colección que ves en inicio.</p>
+      <app-catalog-filters [active]="category()" (changeFilter)="setCategory($event)" />
+    </header>
+
+    @if (products().length === 0) {
+      <p class="catalog__empty">No hay camisetas en esta categoría.</p>
+    } @else {
+      <div class="catalog__grid">
+        @for (product of products(); track product.id) {
+          <app-product-card [product]="product" (add)="addToCart($event)" />
+        }
+      </div>
+    }
+  </div>
+</main>
