@@ -1,6 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MsalService } from '@azure/msal-angular';
+import { environment } from '../../../../environment/environment';
 
 @Component({
   selector: 'app-login-page',
@@ -26,6 +27,8 @@ export class LoginPage {
 
   onSubmit(): void {
     // El botón "Iniciar sesión" ahora redirige directo a Microsoft Entra ID.
-    this.msal.loginRedirect();
+    this.msal.loginRedirect({
+      scopes: ['openid', 'profile', ...environment.azure.protectedResourceScopes],
+    });
   }
 }

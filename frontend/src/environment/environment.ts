@@ -6,7 +6,9 @@ export const environment = {
     authority: 'https://login.microsoftonline.com/3fb87110-4624-4d64-8806-a2304cfbbceb',
     redirectUri: 'http://localhost:4200',
     // Solo si tu API pide un scope específico (ej. api://TU_API_ID/access_as_user)
-    protectedResourceScopes: [] as string[],
+    protectedResourceScopes: [
+      'api://4974cb3b-f538-4df9-8aec-d2c5dca687d0/access_as_user'
+    ] as string[],
   },
-  apiBaseUrl: 'https://47o1qkg4d0.execute-api.us-east-1.amazonaws.com',
+  apiBaseUrl: 'https://47o1qkg4d0.execute-api.us-east-1.amazonaws.com/fifas',
 };

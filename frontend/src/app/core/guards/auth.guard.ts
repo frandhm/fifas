@@ -3,6 +3,7 @@ import { CanActivateFn } from '@angular/router';
 import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
 import { InteractionStatus } from '@azure/msal-browser';
 import { filter, map, take } from 'rxjs';
+import { environment } from '../../../environment/environment';
 
 export const authGuard: CanActivateFn = (_route, state) => {
   const msal = inject(MsalService);
@@ -16,7 +17,10 @@ export const authGuard: CanActivateFn = (_route, state) => {
         msal.instance.setActiveAccount(account);
         return true;
       }
-      msal.loginRedirect({ scopes: ['openid', 'profile'], redirectStartPage: state.url });
+      msal.loginRedirect({
+        scopes: ['openid', 'profile', ...environment.azure.protectedResourceScopes],
+        redirectStartPage: state.url,
+      });
       return false;
     }),
   );

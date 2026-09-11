@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { catchError, of } from 'rxjs';
 import { ADULT_SIZES, KIDS_SIZES, Product } from '../../../core/models/product';
 import { environment } from '../../../../environment/environment';
@@ -82,15 +82,35 @@ export class CatalogService {
     this.loadError.set(null);
     this.http.get<Product[]>(`${environment.apiBaseUrl}/api/productos`)
       .pipe(
-        catchError(() => {
-          this.loadError.set('No pudimos cargar el catálogo en línea. Mostramos productos de demostración.');
+        catchError((error: unknown) => {
+          let reason = 'No pudimos cargar el catálogo en línea.';
+          if (error instanceof HttpErrorResponse) {
+            if (error.statusText === 'Sign in required') {
+              reason = 'Inicia sesión con Microsoft desde Perfil para cargar el catálogo en línea.';
+            } else if (error.statusText === 'API permission not configured') {
+              reason = 'Falta configurar el permiso de acceso al catálogo.';
+            } else if (error.status === 0) {
+              reason = 'No se pudo conectar con el catálogo en línea. Revisa la conexión y vuelve a intentarlo.';
+            } else {
+              reason = `No pudimos cargar el catálogo en línea (HTTP ${error.status}).`;
+            }
+          } else if (typeof error === 'object' && error !== null && 'errorCode' in error) {
+            reason = 'No se pudo autorizar el acceso al catálogo. Cierra sesión e inicia sesión nuevamente con Microsoft.';
+          }
+          if (!environment.production) {
+            // Log only diagnostic codes, never tokens, accounts or response bodies.
+            const code = typeof error === 'object' && error !== null && 'errorCode' in error
+              && typeof error.errorCode === 'string' ? error.errorCode : 'unknown';
+            console.warn('[Catálogo]', error instanceof HttpErrorResponse
+              ? { status: error.status, reason: error.statusText }
+              : { code });
+          }
+          this.loadError.set(`${reason} Mostramos productos de demostración.`);
           return of(PRODUCTS);
         })
       )
       .subscribe((data) => {
-        if (data && data.length > 0) {
-          this.productsSignal.set(data);
-        }
+        this.productsSignal.set(data);
       });
   }
 
