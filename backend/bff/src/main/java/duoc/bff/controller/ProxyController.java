@@ -37,6 +37,11 @@ public class ProxyController {
             HttpServletRequest request,
             @RequestBody(required = false) byte[] body) {
 
+        // API Gateway adds CORS headers; preflight must never reach a protected microservice.
+        if ("OPTIONS".equals(request.getMethod())) {
+            return ResponseEntity.noContent().build();
+        }
+
         String baseUrl = RUTAS.get(servicio);
         if (baseUrl == null) {
             return ResponseEntity.notFound().build();
