@@ -6,6 +6,7 @@
     <header class="catalog__header">
     @if (catalogError()) {
       <p role="status">{{ catalogError() }}</p>
+      <button type="button" (click)="retry()" [disabled]="loading()">Reintentar carga</button>
     }
       <h1>Camisetas</h1>
       <p>Elige tu equipación. Misma colección que ves en inicio.</p>

@@ -13,6 +13,8 @@ import { CatalogService } from '../services/catalog.service';
 })
 export class CatalogPage {
   private readonly catalog = inject(CatalogService);
+  readonly loading = this.catalog.loading;
+  retry(): void { this.catalog.loadFromBackend(); }
   readonly catalogError = this.catalog.loadError;
   private readonly cart = inject(CartService);
 

@@ -1,6 +1,9 @@
-import { Injectable, inject, signal } from '@angular/core';
+import { DestroyRef, Injectable, inject, signal } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { catchError, of } from 'rxjs';
+import { catchError, distinctUntilChanged, filter, finalize, map, of, Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MsalBroadcastService, MsalService } from '@azure/msal-angular';
+import { InteractionStatus } from '@azure/msal-browser';
 import { ADULT_SIZES, KIDS_SIZES, Product } from '../../../core/models/product';
 import { environment } from '../../../../environment/environment';
 
@@ -72,15 +75,40 @@ export class CatalogService {
   private readonly http = inject(HttpClient);
   private readonly productsSignal = signal<Product[]>(PRODUCTS);
 
+  private readonly msal = inject(MsalService);
+  private readonly broadcast = inject(MsalBroadcastService);
+  private readonly destroyRef = inject(DestroyRef);
+  private request?: Subscription;
+  readonly loading = signal(false);
+
   readonly loadError = signal<string | null>(null);
 
   constructor() {
-    this.loadFromBackend();
+    this.destroyRef.onDestroy(() => this.request?.unsubscribe());
+    this.broadcast.inProgress$.pipe(
+      filter((status) => status === InteractionStatus.None),
+      map(() => {
+        const account = this.msal.instance.getActiveAccount() ?? this.msal.instance.getAllAccounts()[0];
+        return account ? `${account.homeAccountId}:${account.localAccountId}:${account.tenantId}` : null;
+      }),
+      distinctUntilChanged(),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe((account) => {
+      this.request?.unsubscribe();
+      if (account) {
+        this.loadFromBackend();
+      } else {
+        this.productsSignal.set(PRODUCTS);
+        this.loadError.set('Inicia sesión con Microsoft desde Perfil para cargar el catálogo en línea. Mostramos productos de demostración.');
+      }
+    });
   }
 
   loadFromBackend(): void {
+    this.request?.unsubscribe();
     this.loadError.set(null);
-    this.http.get<Product[]>(`${environment.apiBaseUrl}/api/productos`)
+    this.loading.set(true);
+    this.request = this.http.get<Product[]>(`${environment.apiBaseUrl}/api/productos`)
       .pipe(
         catchError((error: unknown) => {
           let reason = 'No pudimos cargar el catálogo en línea.';
@@ -107,7 +135,8 @@ export class CatalogService {
           }
           this.loadError.set(`${reason} Mostramos productos de demostración.`);
           return of(PRODUCTS);
-        })
+        }),
+        finalize(() => this.loading.set(false)),
       )
       .subscribe((data) => {
         this.productsSignal.set(data);
