@@ -55,6 +55,12 @@ export const routes: Routes = [
         loadComponent: () =>
           import('./features/transactions/pages/transactions-page').then((m) => m.TransactionsPage),
       },
+      {
+        path: 'soporte',
+        canActivate: [authGuard],
+        loadComponent: () =>
+          import('./features/support/pages/support-page').then((m) => m.SupportPage),
+      },
     ],
   },
   { path: '**', redirectTo: '' },

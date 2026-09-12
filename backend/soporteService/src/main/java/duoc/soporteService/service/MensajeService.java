@@ -14,12 +14,12 @@ public class MensajeService {
     @Autowired
     private MensajeRepository repository;
 
-    public List<Mensaje> listar() {
-        return repository.findAll();
+    public List<Mensaje> listar(String propietario) {
+        return repository.findByPropietarioOrderByIdDesc(propietario);
     }
 
-    public Optional<Mensaje> buscarPorId(Long id) {
-        return repository.findById(id);
+    public Optional<Mensaje> buscarPorId(Long id, String propietario) {
+        return repository.findByIdAndPropietario(id, propietario);
     }
 
     public Mensaje guardar(Mensaje mensaje) {
