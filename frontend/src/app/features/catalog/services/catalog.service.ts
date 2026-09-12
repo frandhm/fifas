@@ -139,7 +139,10 @@ export class CatalogService {
         finalize(() => this.loading.set(false)),
       )
       .subscribe((data) => {
-        this.productsSignal.set(data);
+        // MySQL/JPA serializa el id como número, mientras que las rutas y el
+        // carrito trabajan con strings. Normalizar evita que 12 y "12" sean
+        // considerados productos distintos al recuperar el carrito.
+        this.productsSignal.set(data.map(product => ({ ...product, id: String(product.id) })));
       });
   }
 

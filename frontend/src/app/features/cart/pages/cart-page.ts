@@ -16,7 +16,7 @@ export class CartPage {
     if (!this.count()) return;
     this.notifications.notify('compra', 'Simulación de compra completada. No se realizó ningún cobro ni se creó un pedido real.');
   }
-  private readonly cart = inject(CartService);
+  readonly cart = inject(CartService);
   private readonly catalog = inject(CatalogService);
 
   readonly lines = computed(() =>

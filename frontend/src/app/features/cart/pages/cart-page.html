@@ -5,6 +5,13 @@
   <div class="cart__content">
     <h1>Carrito</h1>
 
+    @if (cart.error()) {
+      <div class="cart__service-error" role="alert">{{ cart.error() }}</div>
+    }
+    @if (cart.loading()) {
+      <p class="cart__service-status" role="status">Sincronizando tu carrito…</p>
+    }
+
     @if (lines().length === 0) {
       <div class="cart__empty">
         <svg class="cart__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -23,7 +30,7 @@
         <section class="cart__items">
           <div class="cart__items-header">
             <span>{{ count() }} {{ count() === 1 ? 'artículo' : 'artículos' }}</span>
-            <button type="button" class="cart__clear-btn" (click)="clear()">
+            <button type="button" class="cart__clear-btn" (click)="clear()" [disabled]="cart.saving()">
               Vaciar carrito
             </button>
           </div>
@@ -58,14 +65,16 @@
                     type="button"
                     class="cart__qty-btn"
                     aria-label="Reducir cantidad"
-                    (click)="decrease(line.product.id, line.size, line.playerName, line.dorsal)"
+                  (click)="decrease(line.product.id, line.size, line.playerName, line.dorsal)"
+                  [disabled]="cart.saving()"
                   >−</button>
                   <span class="cart__qty-value">{{ line.quantity }}</span>
                   <button
                     type="button"
                     class="cart__qty-btn"
                     aria-label="Aumentar cantidad"
-                    (click)="increase(line.product.id, line.size, line.playerName, line.dorsal)"
+                  (click)="increase(line.product.id, line.size, line.playerName, line.dorsal)"
+                  [disabled]="cart.saving()"
                   >+</button>
                 </div>
 
@@ -78,6 +87,7 @@
                   class="cart__remove-btn"
                   aria-label="Quitar artículo"
                   (click)="remove(line.product.id, line.size, line.playerName, line.dorsal)"
+                  [disabled]="cart.saving()"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6 6 18M6 6l12 12"/>
