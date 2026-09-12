@@ -99,18 +99,19 @@ export class NotificationsService {
   setRead(item: NotificationItem): void {
     if (item.leido || this.pending().includes(item.id)) return;
     const generation = this.generation;
+    this.error.set(null);
     this.pending.update(ids => [...ids, item.id]);
     this.http.put<NotificationItem>(`${this.url}/${item.id}`, { leido: true })
-      .pipe(takeUntilDestroyed(this.destroy)).subscribe({
+      .pipe(timeout(15000), takeUntilDestroyed(this.destroy)).subscribe({
         next: updated => {
           if (generation !== this.generation) return;
           this.data.update(items => items.map(n => n.id === updated.id ? updated : n));
           this.pending.update(ids => ids.filter(id => id !== item.id));
         },
-        error: () => {
+        error: (error: unknown) => {
           if (generation !== this.generation) return;
           this.pending.update(ids => ids.filter(id => id !== item.id));
-          this.error.set('No pudimos marcar el aviso como leído. Inténtalo nuevamente.');
+          this.error.set(this.failure('marcar el aviso como leído', error));
         },
       });
   }

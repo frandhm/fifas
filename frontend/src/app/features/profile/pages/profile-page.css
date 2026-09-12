@@ -217,3 +217,9 @@
     grid-template-columns: 1fr;
   }
 }
+
+fieldset.form-grid { border: 0; padding: 0; margin: 0; min-width: 0; }
+button:disabled, fieldset:disabled { opacity: 0.6; }
+button:disabled { cursor: wait; }
+.profile-error { padding: 1rem; border: 1px solid #f87171; border-radius: 12px; color: #fecaca; }
+.profile-error button { cursor: pointer; text-decoration: underline; }

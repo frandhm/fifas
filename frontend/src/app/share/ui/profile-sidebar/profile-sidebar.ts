@@ -12,8 +12,8 @@ export class ProfileSidebar {
   private readonly auth = inject(AuthService);
   readonly user = this.auth.currentUser;
   readonly userInitials = computed(() => {
-    const first = (this.user()?.firstName || 'F').trim().charAt(0);
-    const last = (this.user()?.lastName || 'G').trim().charAt(0);
+    const first = (this.user()?.firstName || 'U').trim().charAt(0);
+    const last = (this.user()?.lastName || '').trim().charAt(0);
     return `${first}${last}`.toUpperCase();
   });
   onLogout(): void { this.auth.logout(); }

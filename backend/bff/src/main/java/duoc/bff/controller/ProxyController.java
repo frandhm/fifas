@@ -62,10 +62,9 @@ public class ProxyController {
                     }
                 }));
 
-        byte[] respuesta = (body != null && body.length > 0)
-                ? peticion.bodyValue(body).retrieve().bodyToMono(byte[].class).block()
-                : peticion.retrieve().bodyToMono(byte[].class).block();
-
-        return ResponseEntity.ok(respuesta);
+        WebClient.RequestHeadersSpec<?> salida = (body != null && body.length > 0)
+                ? peticion.bodyValue(body) : peticion;
+        // Conservar 404/400/401/409 y respuestas sin cuerpo; retrieve() convertía errores en 500.
+        return salida.exchangeToMono(response -> response.toEntity(byte[].class)).block();
     }
 }
