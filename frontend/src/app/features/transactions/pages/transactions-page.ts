@@ -1,12 +1,12 @@
+import { ProfileSidebar } from '../../../share/ui/profile-sidebar/profile-sidebar';
 import { Component, computed, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 import { TransactionsService } from '../services/transactions.service';
 
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [ProfileSidebar],
   templateUrl: './transactions-page.html',
   styleUrl: './transactions-page.css',
 })

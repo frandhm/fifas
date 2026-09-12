@@ -1,3 +1,4 @@
+import { NotificationsService } from './features/notifications/services/notifications.service';
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
@@ -11,6 +12,7 @@ import { MsalService } from '@azure/msal-angular';
 export class App implements OnInit {
   readonly authError = signal<string | null>(null);
   protected readonly title = signal('frontend');
+  private readonly notifications = inject(NotificationsService);
   private readonly msal = inject(MsalService);
 
   ngOnInit(): void {
@@ -19,6 +21,7 @@ export class App implements OnInit {
         const account = result?.account ?? this.msal.instance.getActiveAccount()
           ?? this.msal.instance.getAllAccounts()[0];
         if (account) this.msal.instance.setActiveAccount(account);
+        if (result?.account) this.notifications.notify('sesion', 'Iniciaste sesión con Microsoft. Bienvenido a Los FIFAS.');
       },
       error: () => {
         this.authError.set('No se pudo completar el inicio de sesión. Inténtalo de nuevo desde Perfil.');

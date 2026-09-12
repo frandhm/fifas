@@ -1,3 +1,4 @@
+import { NotificationsService } from '../../notifications/services/notifications.service';
 import { Component, computed, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CatalogService } from '../../catalog/services/catalog.service';
@@ -10,6 +11,11 @@ import { CartService } from '../services/cart.service';
   styleUrl: './cart-page.css',
 })
 export class CartPage {
+  private readonly notifications = inject(NotificationsService);
+  simulatePurchase(): void {
+    if (!this.count()) return;
+    this.notifications.notify('compra', 'Simulación de compra completada. No se realizó ningún cobro ni se creó un pedido real.');
+  }
   private readonly cart = inject(CartService);
   private readonly catalog = inject(CatalogService);
 

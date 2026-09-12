@@ -1,15 +1,17 @@
+import { ProfileSidebar } from '../../../share/ui/profile-sidebar/profile-sidebar';
+import { NotificationsService } from '../../notifications/services/notifications.service';
 import { Component, computed, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 
 @Component({
   selector: 'app-profile-page',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [ProfileSidebar],
   templateUrl: './profile-page.html',
   styleUrl: './profile-page.css',
 })
 export class ProfilePage {
+  private readonly notifications = inject(NotificationsService);
   private readonly authService = inject(AuthService);
 
   // Form signals initialized from AuthService
@@ -37,6 +39,7 @@ export class ProfilePage {
       phone: this.phone(),
     });
 
+    this.notifications.notify('perfil', 'Guardaste los cambios de tu perfil en este dispositivo.');
     this.savedNotice.set(true);
     setTimeout(() => {
       this.savedNotice.set(false);
