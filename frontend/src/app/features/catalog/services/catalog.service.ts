@@ -151,6 +151,6 @@ export class CatalogService {
   }
 
   byId(id: string): Product | undefined {
-    return this.productsSignal().find((product) => product.id === id);
+    return this.productsSignal().find((product) => String(product.id) === String(id));
   }
 }

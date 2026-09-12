@@ -31,6 +31,8 @@ export class CartPage {
 
   readonly total = computed(() => this.lines().reduce((sum, line) => sum + line.subtotal, 0));
   readonly count = this.cart.count;
+  readonly catalogLoading = this.catalog.loading;
+  readonly missingCount = computed(() => this.cart.items().length - this.lines().length);
 
   priceLabel(price: number): string {
     return `$${price.toFixed(2)}`;
