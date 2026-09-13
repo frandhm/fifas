@@ -25,7 +25,7 @@ class PerfilIntegrationTest {
          "telefono":"+56912345678","direccion":"Santiago 123"}
         """;
     private RequestPostProcessor cuenta(String subject) {
-        return jwt().jwt(j -> j.subject(subject).issuer("https://issuer.example"))
+        return jwt().jwt(j -> j.subject(subject).issuer("https://issuer.example").claim("roles", java.util.List.of("Cliente")))
             .authorities(new SimpleGrantedAuthority("SCOPE_access_as_user"));
     }
     @BeforeEach void limpiar() { repository.deleteAll(); }
@@ -37,6 +37,7 @@ class PerfilIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON).content(DATOS))
             .andExpect(status().isOk()).andExpect(jsonPath("$.id").isNumber())
             .andExpect(jsonPath("$.nombre").value("Ana"))
+            .andExpect(jsonPath("$.roles[0]").value("Cliente"))
             .andExpect(jsonPath("$.propietario").doesNotExist());
         mvc.perform(put("/api/usuarios/me").with(cuenta("ana"))
                 .contentType(MediaType.APPLICATION_JSON).content(DATOS.replace("Santiago 123", "Valparaíso 456")))

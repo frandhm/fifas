@@ -13,8 +13,9 @@ export interface Profile {
   correo: string;
   telefono: string;
   direccion: string;
+  roles: string[];
 }
-export type ProfileInput = Omit<Profile, 'id'>;
+export type ProfileInput = Omit<Profile, 'id' | 'roles'>;
 
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
@@ -82,7 +83,8 @@ export class ProfileService {
           const claims = account?.idTokenClaims;
           this.profile.set({ id: null, nombre: String(claims?.['given_name'] ?? ''),
             apellido: String(claims?.['family_name'] ?? ''),
-            correo: String(claims?.['email'] ?? account?.username ?? ''), telefono: '', direccion: '' });
+            correo: String(claims?.['email'] ?? account?.username ?? ''), telefono: '', direccion: '',
+            roles: this.rolesFrom(error.error, claims) });
         } else {
           this.error.set(this.failure('cargar tu perfil', error));
         }
@@ -119,5 +121,13 @@ export class ProfileService {
       if (error.status === 409) return 'El perfil cambió durante el guardado. Recarga los datos e intenta nuevamente.';
     }
     return `No pudimos ${action}. Revisa tu conexión y vuelve a intentarlo.`;
+  }
+
+  private rolesFrom(response: unknown, claims: Record<string, unknown> | undefined): string[] {
+    const apiRoles = response && typeof response === 'object' && Array.isArray((response as { roles?: unknown }).roles)
+      ? (response as { roles: unknown[] }).roles : [];
+    const claimRoles = Array.isArray(claims?.['roles']) ? claims['roles'] : [];
+    return [...apiRoles, ...claimRoles].filter((role): role is string => typeof role === 'string' && role.length > 0)
+      .filter((role, index, all) => all.indexOf(role) === index);
   }
 }

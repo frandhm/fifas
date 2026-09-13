@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/api/usuarios/me")
 public class PerfilController {
@@ -26,11 +28,16 @@ public class PerfilController {
         @NotNull @Size(max = 30) String telefono,
         @NotNull @Size(max = 255) String direccion) {}
     public record Perfil(Long id, String nombre, String apellido, String correo,
-                         String telefono, String direccion) {
-        static Perfil de(Usuario u) {
+                         String telefono, String direccion, List<String> roles) {
+        static Perfil de(Usuario u, Jwt jwt) {
             return new Perfil(u.getId(), u.getNombre(), u.getApellido(), u.getCorreo(),
-                u.getTelefono(), u.getDireccion());
+                u.getTelefono(), u.getDireccion(), PerfilController.roles(jwt));
         }
+    }
+    private static List<String> roles(Jwt jwt) {
+        List<String> roles = jwt.getClaimAsStringList("roles");
+        return roles == null ? List.of() : roles.stream()
+            .filter(role -> role != null && !role.isBlank()).distinct().toList();
     }
     private String propietario(Jwt jwt) {
         if (jwt.getIssuer() == null || jwt.getSubject() == null || jwt.getSubject().isBlank()) {
@@ -42,9 +49,10 @@ public class PerfilController {
     public ResponseEntity<?> obtener(@AuthenticationPrincipal Jwt jwt) {
         var usuario = repository.findByPropietario(propietario(jwt));
         if (usuario.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("code", "PROFILE_NOT_FOUND"));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(Map.of("code", "PROFILE_NOT_FOUND", "roles", roles(jwt)));
         }
-        return ResponseEntity.ok(Perfil.de(usuario.get()));
+        return ResponseEntity.ok(Perfil.de(usuario.get(), jwt));
     }
     @PutMapping
     @Transactional
@@ -58,7 +66,7 @@ public class PerfilController {
         usuario.setTelefono(datos.telefono().trim());
         usuario.setDireccion(datos.direccion().trim());
         try {
-            return Perfil.de(repository.saveAndFlush(usuario));
+            return Perfil.de(repository.saveAndFlush(usuario), jwt);
         } catch (DataIntegrityViolationException ex) {
             throw new ResponseStatusException(HttpStatus.CONFLICT,
                 "El perfil cambió durante el guardado. Recarga e intenta nuevamente.", ex);

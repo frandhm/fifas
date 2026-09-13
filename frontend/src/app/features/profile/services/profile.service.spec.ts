@@ -13,7 +13,7 @@ describe('ProfileService', () => {
   let service: ProfileService;
   let http: HttpTestingController;
   const url = `${environment.apiBaseUrl}/api/usuarios/me`;
-  const profile = { id: 1, nombre: 'Ana', apellido: 'Pérez', correo: 'ana@example.com', telefono: '', direccion: 'Santiago' };
+  const profile = { id: 1, nombre: 'Ana', apellido: 'Pérez', correo: 'ana@example.com', telefono: '', direccion: 'Santiago', roles: ['Cliente'] };
   beforeEach(() => {
     account = null;
     status = new BehaviorSubject<InteractionStatus>(InteractionStatus.None);
@@ -44,6 +44,7 @@ describe('ProfileService', () => {
     expect(service.profile()?.id).toBeNull();
     expect(service.profile()?.nombre).toBe('');
     expect(service.profile()?.correo).toBe('ana@example.com');
+    expect(service.profile()?.roles).toEqual([]);
   });
   it('confirms a save only after the API succeeds and supports reloading persisted data', () => {
     login(); http.expectOne(url).flush(profile);

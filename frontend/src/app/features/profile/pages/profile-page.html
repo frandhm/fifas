@@ -8,6 +8,12 @@
       <div>
         <span class="sub-heading">Mi Cuenta</span>
         <h1 class="page-title">Perfil del Cliente</h1>
+        @if (profiles.profile(); as profile) {
+          <p class="role-summary">
+            Rol{{ profile.roles.length === 1 ? '' : 'es' }}:
+            <strong>{{ profile.roles.length ? profile.roles.join(', ') : 'Sin rol asignado' }}</strong>
+          </p>
+        }
       </div>
     </header>
 

@@ -9,8 +9,8 @@ import { environment } from '../../../../environment/environment';
 
 const PRODUCTS: Product[] = [
   {
-    id: 'local-2026',
-    name: 'Camiseta local Los FIFAS 2026',
+    id: 'colo-colo-centenario',
+    name: 'Polera Colo colo centenario',
     price: 200,
     accent: '#1e4fa3',
     stripe: '#f4f7fb',
