@@ -12,7 +12,7 @@ import { TransactionsService } from '../services/transactions.service';
 })
 export class TransactionsPage {
   private readonly authService = inject(AuthService);
-  private readonly transactionsService = inject(TransactionsService);
+  readonly transactionsService = inject(TransactionsService);
 
   readonly user = this.authService.currentUser;
   readonly transactions = this.transactionsService.userTransactions;
@@ -26,6 +26,8 @@ export class TransactionsPage {
   readonly totalSpent = computed(() => {
     return this.transactions().reduce((acc, curr) => acc + curr.total, 0);
   });
+  readonly activeCount = computed(() => this.transactions().filter(t =>
+    t.status === 'Procesando' || t.status === 'En camino').length);
 
   getStatusClass(status: string): string {
     switch (status) {

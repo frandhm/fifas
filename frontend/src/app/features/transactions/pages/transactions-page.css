@@ -17,7 +17,12 @@
 
 .content-header {
   margin-bottom: 0.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
 }
+.content-header button{border:1px solid rgba(212,175,55,.4);border-radius:10px;background:transparent;color:#f3e6b0;padding:.7rem 1rem;cursor:pointer}.content-header button:disabled{opacity:.55;cursor:wait}.error{padding:1rem;border:1px solid rgba(248,113,113,.3);border-radius:10px;background:rgba(248,113,113,.08);color:#fecaca;font-size:.85rem}
 
 .sub-heading {
   color: #d4af37;

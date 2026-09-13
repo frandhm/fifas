@@ -9,7 +9,10 @@
         <span class="sub-heading">Historial de Compras</span>
         <h1 class="page-title">Transacciones</h1>
       </div>
+      <button type="button" (click)="transactionsService.refresh()" [disabled]="transactionsService.loading()">{{ transactionsService.loading() ? 'Actualizando…' : 'Actualizar' }}</button>
     </header>
+
+    @if (transactionsService.error()) { <div class="error" role="alert">{{ transactionsService.error() }}</div> }
 
     <!-- Stats summary -->
     <div class="stats-summary-grid">
@@ -22,8 +25,8 @@
         <span class="summary-value">{{ transactions().length }} Pedidos</span>
       </div>
       <div class="summary-card highlight">
-        <span class="summary-label">Estado Último Envíos</span>
-        <span class="summary-value">1 En camino 🚚</span>
+        <span class="summary-label">Solicitudes activas</span>
+        <span class="summary-value">{{ activeCount() }} en proceso</span>
       </div>
     </div>
 

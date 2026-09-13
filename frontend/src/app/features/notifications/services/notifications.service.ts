@@ -101,7 +101,7 @@ export class NotificationsService {
     const generation = this.generation;
     this.error.set(null);
     this.pending.update(ids => [...ids, item.id]);
-    this.http.put<NotificationItem>(`${this.url}/${item.id}`, { leido: true })
+    this.http.put<NotificationItem>(this.url, { id: item.id, leido: true })
       .pipe(timeout(15000), takeUntilDestroyed(this.destroy)).subscribe({
         next: updated => {
           if (generation !== this.generation) return;

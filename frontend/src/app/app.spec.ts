@@ -2,7 +2,7 @@ import { NotificationsService } from './features/notifications/services/notifica
 import { TestBed } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
 import { MsalService } from '@azure/msal-angular';
-import { of } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { App } from './app';
 
 describe('App', () => {
@@ -20,5 +20,17 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     const app = fixture.componentInstance;
     expect(app).toBeTruthy();
+  });
+
+  it('recovers a failed redirect so login can be retried', () => {
+    const clearCache = vi.fn().mockResolvedValue(undefined);
+    TestBed.overrideProvider(MsalService, { useValue: {
+      handleRedirectObservable: () => throwError(() => ({ errorCode: 'state_not_found' })),
+      instance: { getActiveAccount: () => null, getAllAccounts: () => [], clearCache },
+    } });
+    const fixture = TestBed.createComponent(App);
+    fixture.detectChanges();
+    expect(fixture.componentInstance.authError()).toContain('state_not_found');
+    expect(clearCache).toHaveBeenCalledOnce();
   });
 });

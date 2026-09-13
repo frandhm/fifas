@@ -35,8 +35,8 @@ describe('Notifications', () => {
   it('loads own notifications and persists read state only after success', () => {
     login(); expect(service.unread()).toBe(1);
     service.setRead(item);
-    const request = http.expectOne(`${url}/1`);
-    expect(request.request.body).toEqual({ leido: true });
+    const request = http.expectOne(url);
+    expect(request.request.body).toEqual({ id: 1, leido: true });
     expect(service.unread()).toBe(1);
     request.flush({ ...item, leido: true }); expect(service.unread()).toBe(0);
   });

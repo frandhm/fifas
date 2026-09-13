@@ -8,6 +8,9 @@
     @if (cart.error()) {
       <div class="cart__service-error" role="alert">{{ cart.error() }}</div>
     }
+    @if (purchaseError()) {
+      <div class="cart__service-error" role="alert">{{ purchaseError() }}</div>
+    }
     @if (cart.loading()) {
       <p class="cart__service-status" role="status">Sincronizando tu carrito…</p>
     }
@@ -138,13 +141,13 @@
             <strong>{{ priceLabel(total()) }}</strong>
           </div>
 
-          <button type="button" class="cart__checkout-btn" (click)="simulatePurchase()">
-            Simular compra
+          <button type="button" class="cart__checkout-btn" (click)="simulatePurchase()" [disabled]="purchaseSaving() || cart.saving()">
+            {{ purchaseSaving() ? 'Registrando…' : 'Registrar solicitud' }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M5 12h14M13 6l6 6-6 6"/>
             </svg>
           </button>
-          <p class="cart__checkout-note">Demostración visual: no se realizarán cobros ni se generarán pedidos.</p>
+          <p class="cart__checkout-note">Se creará una solicitud real en tu historial. No se realizará ningún cobro.</p>
 
           <a routerLink="/catalogo" class="cart__continue">← Seguir comprando</a>
         </aside>
