@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SolicitudRepository extends JpaRepository<Solicitud, Long> {
+    java.util.List<Solicitud> findByPropietarioOrderByIdDesc(String propietario);
+    java.util.Optional<Solicitud> findByIdAndPropietario(Long id, String propietario);
 }

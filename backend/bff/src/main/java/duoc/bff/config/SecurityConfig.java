@@ -1,9 +1,9 @@
 package duoc.bff.config;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,9 +27,8 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
                 .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/productos/**").hasAuthority("ROLE_Admin")
-                .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAuthority("ROLE_Admin")
-                .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasAuthority("ROLE_Admin")
+                // Reservado para funcionalidades administrativas que se agreguen al BFF.
+                .requestMatchers("/api/admin/**").hasAuthority("ROLE_Admin")
                 .anyRequest().authenticated()
             )
             .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
@@ -38,6 +37,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Microsoft Entra entrega los App Roles en el claim "roles". Spring solo
+     * convierte scopes por defecto; esta conversión conserva los SCOPE_* y
+     * agrega ROLE_* para que las reglas del BFF puedan autorizarlos.
+     */
     @Bean
     Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
         JwtGrantedAuthoritiesConverter scopes = new JwtGrantedAuthoritiesConverter();

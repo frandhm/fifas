@@ -1,19 +1,18 @@
+import { ProfileSidebar } from '../../../share/ui/profile-sidebar/profile-sidebar';
 import { Component, computed, inject } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../auth/services/auth.service';
 import { TransactionsService } from '../services/transactions.service';
 
 @Component({
   selector: 'app-transactions-page',
   standalone: true,
-  imports: [RouterLink, RouterLinkActive],
+  imports: [ProfileSidebar],
   templateUrl: './transactions-page.html',
   styleUrl: './transactions-page.css',
 })
 export class TransactionsPage {
   private readonly authService = inject(AuthService);
-  private readonly transactionsService = inject(TransactionsService);
-  private readonly router = inject(Router);
+  readonly transactionsService = inject(TransactionsService);
 
   readonly user = this.authService.currentUser;
   readonly transactions = this.transactionsService.userTransactions;
@@ -27,6 +26,8 @@ export class TransactionsPage {
   readonly totalSpent = computed(() => {
     return this.transactions().reduce((acc, curr) => acc + curr.total, 0);
   });
+  readonly activeCount = computed(() => this.transactions().filter(t =>
+    t.status === 'Procesando' || t.status === 'En camino').length);
 
   getStatusClass(status: string): string {
     switch (status) {
@@ -45,6 +46,5 @@ export class TransactionsPage {
 
   onLogout(): void {
     this.authService.logout();
-    this.router.navigate(['/']);
   }
 }

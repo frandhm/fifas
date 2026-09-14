@@ -431,3 +431,5 @@
     grid-template-columns: 1fr 22rem;
   }
 }
+.cart__service-error{grid-column:1/-1;margin:0 0 1rem;padding:.85rem 1rem;border:1px solid #f8717144;border-radius:10px;background:#f8717115;color:#fecaca;font-size:.82rem}.cart__service-status{color:#f3e6b0;font-size:.8rem}.cart button:disabled{opacity:.55;cursor:wait}
+.cart__empty--warning{gap:1rem}.cart__empty--warning .cart__clear-btn{margin-top:.25rem}

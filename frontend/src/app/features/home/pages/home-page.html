@@ -11,6 +11,9 @@
   </section>
 
   <section class="home-carousel" aria-labelledby="collection-title">
+    @if (catalogError()) {
+      <p role="status">{{ catalogError() }}</p>
+    }
     <h2 id="collection-title">Vístete como un campeón — nueva colección</h2>
 
     <div class="home-carousel__stage">

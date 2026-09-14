@@ -1,1 +1,4 @@
+@if (authError()) {
+  <p role="alert">{{ authError() }}</p>
+}
 <router-outlet />
