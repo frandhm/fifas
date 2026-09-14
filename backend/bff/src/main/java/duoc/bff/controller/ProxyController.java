@@ -19,12 +19,12 @@ public class ProxyController {
 
     // Aqui defines a que microservicio corresponde cada primer segmento de la ruta
     private static final Map<String, String> RUTAS = Map.of(
-            "usuarios", "http://localhost:8082",
-            "productos", "http://localhost:8083",
-            "carritos", "http://localhost:8084",
-            "solicitudes", "http://localhost:8087",
-            "notificaciones", "http://localhost:8086",
-            "mensajes", "http://localhost:8088"
+        "usuarios", "http://172.31.24.223:8082",
+        "productos", "http://172.31.24.223:8083",
+        "carritos", "http://172.31.24.223:8084",
+        "solicitudes", "http://172.31.95.160:8087",
+        "notificaciones", "http://172.31.95.160:8086",
+        "mensajes", "http://172.31.95.160:8088"
     );
 
     public ProxyController(WebClient.Builder webClientBuilder) {
@@ -36,6 +36,11 @@ public class ProxyController {
             @PathVariable String servicio,
             HttpServletRequest request,
             @RequestBody(required = false) byte[] body) {
+
+        // API Gateway adds CORS headers; preflight must never reach a protected microservice.
+        if ("OPTIONS".equals(request.getMethod())) {
+            return ResponseEntity.noContent().build();
+        }
 
         String baseUrl = RUTAS.get(servicio);
         if (baseUrl == null) {
@@ -57,10 +62,9 @@ public class ProxyController {
                     }
                 }));
 
-        byte[] respuesta = (body != null && body.length > 0)
-                ? peticion.bodyValue(body).retrieve().bodyToMono(byte[].class).block()
-                : peticion.retrieve().bodyToMono(byte[].class).block();
-
-        return ResponseEntity.ok(respuesta);
+        WebClient.RequestHeadersSpec<?> salida = (body != null && body.length > 0)
+                ? peticion.bodyValue(body) : peticion;
+        // Conservar 404/400/401/409 y respuestas sin cuerpo; retrieve() convertía errores en 500.
+        return salida.exchangeToMono(response -> response.toEntity(byte[].class)).block();
     }
 }

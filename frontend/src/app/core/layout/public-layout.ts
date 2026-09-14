@@ -1,5 +1,8 @@
+import { NotificationsService } from '../../features/notifications/services/notifications.service';
+import { environment } from '../../../environment/environment';
 import { Component, inject } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { MsalService } from '@azure/msal-angular';
 import { CartService } from '../../features/cart/services/cart.service';
 
 @Component({
@@ -9,5 +12,17 @@ import { CartService } from '../../features/cart/services/cart.service';
   styleUrl: './public-layout.css',
 })
 export class PublicLayout {
+  private readonly msal = inject(MsalService);
+  private readonly router = inject(Router);
+  readonly notifications = inject(NotificationsService);
   readonly cartCount = inject(CartService).count;
+
+  goToProfile(): void {
+    const isLoggedIn = this.msal.instance.getAllAccounts().length > 0;
+    if (isLoggedIn) {
+      this.router.navigateByUrl('/perfil');
+    } else {
+      this.msal.loginRedirect({ scopes: ['openid', 'profile', ...environment.azure.protectedResourceScopes] });
+    }
+  }
 }

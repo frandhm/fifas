@@ -11,6 +11,16 @@ public class Notificacion {
     private Long id;
 
     private Long usuarioId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private String propietario;
+    private String tipo;
+    private java.time.Instant fecha;
+    public String getPropietario() { return propietario; }
+    public void setPropietario(String value) { propietario = value; }
+    public String getTipo() { return tipo; }
+    public void setTipo(String value) { tipo = value; }
+    public java.time.Instant getFecha() { return fecha; }
+    public void setFecha(java.time.Instant value) { fecha = value; }
     private String mensaje;
     private Boolean leido;
 

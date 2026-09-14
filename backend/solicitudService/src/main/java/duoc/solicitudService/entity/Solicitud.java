@@ -10,8 +10,13 @@ public class Solicitud {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long usuarioId;
-    private Long productoId;
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    private String propietario;
+    private String productoId;
+    private String productoNombre;
+    private Integer cantidad;
+    private java.math.BigDecimal precioUnitario;
+    private java.time.Instant fechaCreacion;
     private String equipo;
     private Integer anio;
     private String nombreEstampado;
@@ -24,11 +29,18 @@ public class Solicitud {
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
-    public Long getUsuarioId() { return usuarioId; }
-    public void setUsuarioId(Long usuarioId) { this.usuarioId = usuarioId; }
-
-    public Long getProductoId() { return productoId; }
-    public void setProductoId(Long productoId) { this.productoId = productoId; }
+    public String getPropietario() { return propietario; }
+    public void setPropietario(String propietario) { this.propietario = propietario; }
+    public String getProductoId() { return productoId; }
+    public void setProductoId(String productoId) { this.productoId = productoId; }
+    public String getProductoNombre() { return productoNombre; }
+    public void setProductoNombre(String productoNombre) { this.productoNombre = productoNombre; }
+    public Integer getCantidad() { return cantidad; }
+    public void setCantidad(Integer cantidad) { this.cantidad = cantidad; }
+    public java.math.BigDecimal getPrecioUnitario() { return precioUnitario; }
+    public void setPrecioUnitario(java.math.BigDecimal precioUnitario) { this.precioUnitario = precioUnitario; }
+    public java.time.Instant getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(java.time.Instant fechaCreacion) { this.fechaCreacion = fechaCreacion; }
 
     public String getEquipo() { return equipo; }
     public void setEquipo(String equipo) { this.equipo = equipo; }

@@ -12,12 +12,16 @@
     </nav>
 
     <div class="public-header__actions">
-      <a routerLink="/perfil" aria-label="Perfil">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="8" r="3.2" />
-          <path d="M5 19.2c.8-3.2 3.5-5.2 7-5.2s6.2 2 7 5.2" />
-        </svg>
+      <a routerLink="/notificaciones" class="public-header__cart" [attr.aria-label]="'Notificaciones: ' + notifications.unread() + ' sin leer'">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9Z"/><path d="M10 21h4"/></svg>
+        @if (notifications.unread() > 0) { <span class="public-header__badge">{{ notifications.unread() > 99 ? '99+' : notifications.unread() }}</span> }
       </a>
+      <button type="button" (click)="goToProfile()" aria-label="Perfil" class="public-header__profile-btn">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+    <circle cx="12" cy="8" r="3.2" />
+    <path d="M5 19.2c.8-3.2 3.5-5.2 7-5.2s6.2 2 7 5.2" />
+  </svg>
+</button>
       <a routerLink="/carrito" class="public-header__cart" aria-label="Carrito">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M6 7h15l-1.5 8.5H8L6 7Z" />
@@ -32,6 +36,11 @@
     </div>
   </header>
 
+  <div class="notification-live" aria-live="polite" aria-atomic="true">
+    @if (notifications.toast()) {
+      <div class="notification-toast"><span class="notification-toast__icon" aria-hidden="true">✓</span><div><strong>LOS FIFAS</strong><p>{{ notifications.toast() }}</p><a routerLink="/notificaciones" (click)="notifications.dismiss()">Ver notificaciones →</a></div><button type="button" aria-label="Cerrar aviso" (click)="notifications.dismiss()">×</button></div>
+    }
+  </div>
   <div class="public-shell__content">
     <router-outlet />
   </div>
@@ -49,6 +58,8 @@
         <a routerLink="/carrito">Carrito</a>
         <a routerLink="/perfil">Perfil</a>
         <a routerLink="/transacciones">Transacciones</a>
+        <a routerLink="/notificaciones">Notificaciones</a>
+        <a routerLink="/soporte">Soporte</a>
       </div>
       <div>
         <h2>Los FIFAS</h2>

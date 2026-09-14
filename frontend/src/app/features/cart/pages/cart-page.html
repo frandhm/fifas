@@ -5,7 +5,27 @@
   <div class="cart__content">
     <h1>Carrito</h1>
 
-    @if (lines().length === 0) {
+    @if (cart.error()) {
+      <div class="cart__service-error" role="alert">{{ cart.error() }}</div>
+    }
+    @if (purchaseError()) {
+      <div class="cart__service-error" role="alert">{{ purchaseError() }}</div>
+    }
+    @if (cart.loading()) {
+      <p class="cart__service-status" role="status">Sincronizando tu carrito…</p>
+    }
+
+    @if (lines().length === 0 && count() > 0 && (cart.loading() || catalogLoading())) {
+      <div class="cart__empty" role="status">
+        <p>Cargando los productos de tu carrito…</p>
+      </div>
+    } @else if (lines().length === 0 && count() > 0) {
+      <div class="cart__empty cart__empty--warning" role="alert">
+        <p>Tu carrito tiene {{ count() }} {{ count() === 1 ? 'artículo guardado' : 'artículos guardados' }}, pero el catálogo no devolvió sus datos.</p>
+        <button type="button" class="cart__cta-link" (click)="cart.refresh()">Volver a sincronizar</button>
+        <button type="button" class="cart__clear-btn" (click)="clear()">Eliminar artículos incompatibles</button>
+      </div>
+    } @else if (lines().length === 0) {
       <div class="cart__empty">
         <svg class="cart__empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
           <path d="M6 7h15l-1.5 8.5H8L6 7Z" />
@@ -19,11 +39,17 @@
     } @else {
       <div class="cart__layout">
 
+        @if (missingCount() > 0) {
+          <div class="cart__service-error" role="alert">
+            Hay {{ missingCount() }} {{ missingCount() === 1 ? 'producto' : 'productos' }} pendiente de cargar desde el catálogo.
+          </div>
+        }
+
         <!-- LISTA DE PRODUCTOS -->
         <section class="cart__items">
           <div class="cart__items-header">
             <span>{{ count() }} {{ count() === 1 ? 'artículo' : 'artículos' }}</span>
-            <button type="button" class="cart__clear-btn" (click)="clear()">
+            <button type="button" class="cart__clear-btn" (click)="clear()" [disabled]="cart.saving()">
               Vaciar carrito
             </button>
           </div>
@@ -58,14 +84,16 @@
                     type="button"
                     class="cart__qty-btn"
                     aria-label="Reducir cantidad"
-                    (click)="decrease(line.product.id, line.size, line.playerName, line.dorsal)"
+                  (click)="decrease(line.product.id, line.size, line.playerName, line.dorsal)"
+                  [disabled]="cart.saving()"
                   >−</button>
                   <span class="cart__qty-value">{{ line.quantity }}</span>
                   <button
                     type="button"
                     class="cart__qty-btn"
                     aria-label="Aumentar cantidad"
-                    (click)="increase(line.product.id, line.size, line.playerName, line.dorsal)"
+                  (click)="increase(line.product.id, line.size, line.playerName, line.dorsal)"
+                  [disabled]="cart.saving()"
                   >+</button>
                 </div>
 
@@ -78,6 +106,7 @@
                   class="cart__remove-btn"
                   aria-label="Quitar artículo"
                   (click)="remove(line.product.id, line.size, line.playerName, line.dorsal)"
+                  [disabled]="cart.saving()"
                 >
                   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M18 6 6 18M6 6l12 12"/>
@@ -112,13 +141,13 @@
             <strong>{{ priceLabel(total()) }}</strong>
           </div>
 
-          <button type="button" class="cart__checkout-btn" disabled>
-            Proceder al pago
+          <button type="button" class="cart__checkout-btn" (click)="simulatePurchase()" [disabled]="purchaseSaving() || cart.saving()">
+            {{ purchaseSaving() ? 'Registrando…' : 'Registrar solicitud' }}
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
               <path d="M5 12h14M13 6l6 6-6 6"/>
             </svg>
           </button>
-          <p class="cart__checkout-note">El pago estará disponible próximamente.</p>
+          <p class="cart__checkout-note">Se creará una solicitud real en tu historial. No se realizará ningún cobro.</p>
 
           <a routerLink="/catalogo" class="cart__continue">← Seguir comprando</a>
         </aside>

@@ -1,6 +1,6 @@
-import { Injectable, computed, signal } from '@angular/core';
-
-const STORAGE_KEY = 'fifas.auth.user';
+import { Injectable, computed, inject } from '@angular/core';
+import { MsalService } from '@azure/msal-angular';
+import { ProfileService } from '../../profile/services/profile.service';
 
 export interface AuthUser {
   email: string;
@@ -11,57 +11,18 @@ export interface AuthUser {
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly user = signal<AuthUser | null>(this.readStoredUser());
-
-  readonly currentUser = this.user.asReadonly();
-  readonly isLoggedIn = computed(() => this.user() !== null);
-
-  login(email: string, password: string): boolean {
-    if (!email.trim() || password.length < 4) {
-      return false;
-    }
-
-    const stored = this.readStoredUser();
-    const next: AuthUser = {
-      email: email.trim(),
-      firstName: stored?.firstName || 'Francisco',
-      lastName: stored?.lastName || 'García',
-      phone: stored?.phone || '+56 9 1234 5678',
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    this.user.set(next);
-    return true;
-  }
-
-  updateProfile(data: { firstName: string; lastName: string; email: string; phone: string }): void {
-    const next: AuthUser = {
-      email: data.email.trim(),
-      firstName: data.firstName.trim(),
-      lastName: data.lastName.trim(),
-      phone: data.phone.trim(),
-    };
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-    this.user.set(next);
-  }
+  private readonly msal = inject(MsalService);
+  private readonly profiles = inject(ProfileService);
+  readonly currentUser = computed<AuthUser | null>(() => {
+    const profile = this.profiles.profile();
+    return profile ? { email: profile.correo, firstName: profile.nombre,
+      lastName: profile.apellido, phone: profile.telefono } : null;
+  });
 
   logout(): void {
-    localStorage.removeItem(STORAGE_KEY);
-    this.user.set(null);
-  }
-
-  private readStoredUser(): AuthUser | null {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) return null;
-      const parsed = JSON.parse(raw) as AuthUser;
-      return {
-        email: parsed.email || 'usuario@fifas.com',
-        firstName: parsed.firstName || 'Francisco',
-        lastName: parsed.lastName || 'García',
-        phone: parsed.phone || '+56 9 1234 5678',
-      };
-    } catch {
-      return null;
-    }
+    this.profiles.reset();
+    localStorage.removeItem('fifas.auth.user');
+    const account = this.msal.instance.getActiveAccount() ?? this.msal.instance.getAllAccounts()[0];
+    void this.msal.logoutRedirect({ account, postLogoutRedirectUri: window.location.origin });
   }
 }
