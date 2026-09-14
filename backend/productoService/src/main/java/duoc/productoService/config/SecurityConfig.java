@@ -1,4 +1,4 @@
-package duoc.bff.config;
+package duoc.productoService.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,23 +19,18 @@ import java.util.List;
 
 @Configuration
 public class SecurityConfig {
-
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-            .csrf(csrf -> csrf.disable())
+    SecurityFilterChain security(HttpSecurity http) throws Exception {
+        return http.csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/api/**").permitAll()
-                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/productos/**").hasAuthority("SCOPE_access_as_user")
                 .requestMatchers(HttpMethod.POST, "/api/productos/**").hasAuthority("ROLE_Admin")
                 .requestMatchers(HttpMethod.PUT, "/api/productos/**").hasAuthority("ROLE_Admin")
                 .requestMatchers(HttpMethod.DELETE, "/api/productos/**").hasAuthority("ROLE_Admin")
-                .anyRequest().authenticated()
-            )
-            .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
-                jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())));
-
-        return http.build();
+                .anyRequest().denyAll())
+            .oauth2ResourceServer(oauth -> oauth.jwt(jwt ->
+                jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())))
+            .build();
     }
 
     @Bean
