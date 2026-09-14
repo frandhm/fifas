@@ -1,0 +1,56 @@
+<main class="support-page">
+  <app-profile-sidebar />
+  <section class="support-content">
+    <header class="page-heading">
+      <span class="eyebrow">ESTAMOS PARA AYUDARTE</span>
+      <h1>Soporte<span>.</span></h1>
+      <p>Cuéntanos qué ocurrió. Tu solicitud quedará registrada y asociada exclusivamente a tu cuenta.</p>
+    </header>
+
+    <div class="support-grid">
+      <form class="ticket-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="form-heading"><div><small>NUEVA SOLICITUD</small><h2>¿Cómo podemos ayudarte?</h2></div><span>Respuesta habitual: 24–48 h</span></div>
+
+        @if (sentId()) {
+          <div class="success" role="status"><strong>Solicitud enviada</strong><span>Tu número de seguimiento es #{{ sentId() }}.</span></div>
+        }
+        @if (support.error()) { <div class="error" role="alert">{{ support.error() }}</div> }
+
+        <label>Correo de contacto
+          <input type="email" formControlName="correo" autocomplete="email" placeholder="tu@correo.cl" />
+          @if (form.controls.correo.touched && form.controls.correo.invalid) { <small class="field-error">Ingresa un correo válido.</small> }
+        </label>
+        <label>Tipo de consulta
+          <select formControlName="categoria">
+            @for (category of categories; track category.value) { <option [value]="category.value">{{ category.label }}</option> }
+          </select>
+        </label>
+        <label class="full">Asunto
+          <input type="text" formControlName="asunto" maxlength="120" placeholder="Resume tu consulta" />
+          @if (form.controls.asunto.touched && form.controls.asunto.invalid) { <small class="field-error">Escribe entre 5 y 120 caracteres.</small> }
+        </label>
+        <label class="full">Mensaje
+          <textarea formControlName="mensaje" maxlength="2000" rows="7" placeholder="Incluye los detalles que nos ayuden a resolver tu solicitud."></textarea>
+          <span class="counter">{{ form.controls.mensaje.value.length }}/2000</span>
+          @if (form.controls.mensaje.touched && form.controls.mensaje.invalid) { <small class="field-error">Escribe al menos 10 caracteres.</small> }
+        </label>
+        <button class="submit" type="submit" [disabled]="support.saving()">{{ support.saving() ? 'Enviando…' : 'Enviar solicitud' }}</button>
+      </form>
+
+      <aside class="history">
+        <div class="history-heading"><div><small>TUS CASOS</small><h2>Historial</h2></div><button type="button" (click)="support.refresh()" [disabled]="support.loading()">Actualizar</button></div>
+        @if (support.loading() && !support.tickets().length) {
+          <p class="empty">Cargando solicitudes…</p>
+        } @else {
+          @for (ticket of support.tickets(); track ticket.id) {
+            <article>
+              <div class="ticket-meta"><span>#{{ ticket.id }} · {{ ticket.categoria }}</span><time>{{ ticket.fechaCreacion | date:'dd/MM/yyyy · HH:mm' }}</time></div>
+              <h3>{{ ticket.asunto }}</h3><p>{{ ticket.mensaje }}</p>
+              <span class="status" [class]="'status ' + ticket.estado">{{ statusLabels[ticket.estado] || ticket.estado }}</span>
+            </article>
+          } @empty { <div class="empty"><strong>Aún no tienes solicitudes</strong><span>Cuando envíes una consulta aparecerá aquí.</span></div> }
+        }
+      </aside>
+    </div>
+  </section>
+</main>

@@ -1,0 +1,92 @@
+<div class="profile-layout">
+  <!-- Sidebar Container -->
+  <app-profile-sidebar />
+
+  <!-- Main Content Area -->
+  <main class="profile-content">
+    <header class="content-header">
+      <div>
+        <span class="sub-heading">Historial de Compras</span>
+        <h1 class="page-title">Transacciones</h1>
+      </div>
+      <button type="button" (click)="transactionsService.refresh()" [disabled]="transactionsService.loading()">{{ transactionsService.loading() ? 'Actualizando…' : 'Actualizar' }}</button>
+    </header>
+
+    @if (transactionsService.error()) { <div class="error" role="alert">{{ transactionsService.error() }}</div> }
+
+    <!-- Stats summary -->
+    <div class="stats-summary-grid">
+      <div class="summary-card">
+        <span class="summary-label">Total Invertido</span>
+        <span class="summary-value">${{ totalSpent().toLocaleString('es-CL') }}</span>
+      </div>
+      <div class="summary-card">
+        <span class="summary-label">Compras Realizadas</span>
+        <span class="summary-value">{{ transactions().length }} Pedidos</span>
+      </div>
+      <div class="summary-card highlight">
+        <span class="summary-label">Solicitudes activas</span>
+        <span class="summary-value">{{ activeCount() }} en proceso</span>
+      </div>
+    </div>
+
+    <!-- Transactions Table Card -->
+    <div class="table-card">
+      <div class="card-header">
+        <h2>Detalle de Pedidos</h2>
+        <p>Listado de todas tus transacciones realizadas en la tienda.</p>
+      </div>
+
+      <div class="table-responsive">
+        <table class="transactions-table">
+          <thead>
+            <tr>
+              <th>ID Pedido</th>
+              <th>Fecha</th>
+              <th>Productos</th>
+              <th>Método de Pago</th>
+              <th>Total</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (t of transactions(); track t.id) {
+              <tr>
+                <td class="id-cell">
+                  <span class="order-id">{{ t.id }}</span>
+                </td>
+                <td class="date-cell">{{ t.date }}</td>
+                <td class="items-cell">
+                  <div class="items-list">
+                    @for (item of t.items; track item.name) {
+                      <div class="item-line">
+                        <span class="item-qty">{{ item.quantity }}x</span>
+                        <span class="item-name">{{ item.name }} (Talla {{ item.size }})</span>
+                        @if (item.customName) {
+                          <span class="item-custom">[{{ item.customName }} #{{ item.customDorsal }}]</span>
+                        }
+                      </div>
+                    }
+                  </div>
+                </td>
+                <td class="payment-cell">{{ t.paymentMethod }}</td>
+                <td class="total-cell">${{ t.total.toLocaleString('es-CL') }}</td>
+                <td>
+                  <span class="status-badge" [class]="getStatusClass(t.status)">
+                    {{ t.status }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="empty-state">
+                  No has realizado ninguna compra todavía.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>

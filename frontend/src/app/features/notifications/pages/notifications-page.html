@@ -1,0 +1,29 @@
+<main class="notifications">
+  <app-profile-sidebar />
+  <section class="inbox">
+    <header><div><span class="eyebrow">AL DÍA CON LOS FIFAS</span><h1>Notificaciones<span class="gold">.</span></h1><p>Tu actividad y los detalles que importan.</p></div><button class="refresh" (click)="notifications.refresh()" [disabled]="notifications.loading()">{{ notifications.loading() ? 'Actualizando…' : 'Actualizar' }}</button></header>
+    <div class="summary"><span class="status-dot"></span><strong>{{ notifications.unread() }}</strong><span>notificaciones sin leer</span></div>
+    <div class="inbox-card">
+      <div class="filters" aria-label="Filtrar notificaciones">
+        <button [class.selected]="filter() === 'all'" [attr.aria-pressed]="filter() === 'all'" (click)="filter.set('all')">Todas <span>{{ notifications.items().length }}</span></button>
+        <button [class.selected]="filter() === 'unread'" [attr.aria-pressed]="filter() === 'unread'" (click)="filter.set('unread')">Sin leer <span>{{ notifications.unread() }}</span></button>
+      </div>
+      @if (notifications.error()) { <div class="error" role="alert">{{ notifications.error() }}</div> }
+      @if (notifications.loading() && !notifications.items().length) {
+        <div class="empty" role="status">Cargando tu actividad…</div>
+      } @else {
+        @for (item of visible(); track item.id) {
+          <article [class.unread]="!item.leido">
+            <div class="event-icon" aria-hidden="true">{{ item.tipo === 'carrito' ? '+' : item.tipo === 'sesion' ? '↗' : '✓' }}</div>
+            <div class="event-body"><div class="event-meta"><span>{{ labels[item.tipo] || 'Actividad' }}</span><time>{{ item.fecha | date:'dd/MM/yyyy · HH:mm' }}</time></div><p>{{ item.mensaje }}</p>
+            @if (!item.leido) { <button class="read" (click)="notifications.setRead(item)" [disabled]="notifications.pending().includes(item.id)">Marcar como leída</button> } @else { <small>Leída</small> }</div>
+            @if (!item.leido) { <span class="status-dot" aria-label="Sin leer"></span> }
+          </article>
+        } @empty {
+          @if (!notifications.error()) { <div class="empty"><div class="empty-symbol" aria-hidden="true">✓</div><h2>{{ filter() === 'unread' ? 'Estás al día' : 'Aquí empieza tu actividad' }}</h2><p>{{ filter() === 'unread' ? 'No tienes notificaciones pendientes.' : 'Tus próximos avisos de cuenta y carrito aparecerán aquí.' }}</p><a routerLink="/catalogo">Explorar camisetas →</a></div> }
+        }
+      }
+    </div>
+    <p class="footnote">Solo tú puedes ver las notificaciones de tu cuenta.</p>
+  </section>
+</main>

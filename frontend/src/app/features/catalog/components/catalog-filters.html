@@ -1,0 +1,11 @@
+<div class="catalog-filters" role="group" aria-label="Filtrar camisetas">
+  @for (option of options; track option.id) {
+    <button
+      type="button"
+      [class.is-active]="active() === option.id"
+      (click)="changeFilter.emit(option.id)"
+    >
+      {{ option.label }}
+    </button>
+  }
+</div>

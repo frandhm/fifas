@@ -1,0 +1,11 @@
+package duoc.notificacionService.repository;
+
+import duoc.notificacionService.entity.Notificacion;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface NotificacionRepository extends JpaRepository<Notificacion, Long> {
+    java.util.List<Notificacion> findByPropietarioOrderByIdDesc(String propietario);
+    java.util.Optional<Notificacion> findByIdAndPropietario(Long id, String propietario);
+}
