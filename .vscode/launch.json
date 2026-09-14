@@ -1,0 +1,74 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-BffApplication<bff>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "duoc.bff.BffApplication",
+            "projectName": "bff",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-CarritoServiceApplication<carritoService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "duoc.carritoService.CarritoServiceApplication",
+            "projectName": "carritoService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-NotificacionServiceApplication<notificacionService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "duoc.notificacionService.NotificacionServiceApplication",
+            "projectName": "notificacionService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-ProductoServiceApplication<productoService>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "duoc.productoService.ProductoServiceApplication",
+            "projectName": "productoService",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SolicitudesServiceApplication<solicitudes>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "duoc.solicitudService.SolicitudesServiceApplication",
+            "projectName": "solicitudes",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-SoporteServiceApplication<soporte>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "duoc.soporteService.SoporteServiceApplication",
+            "projectName": "soporte",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        },
+        {
+            "type": "java",
+            "name": "Spring Boot-UsuarioServiceApplication<usuarios-service>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "mainClass": "duoc.usuarioService.UsuarioServiceApplication",
+            "projectName": "usuarios-service",
+            "args": "",
+            "envFile": "${workspaceFolder}/.env"
+        }
+    ]
+}
