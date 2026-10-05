@@ -2,6 +2,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "RabbitServiceApplication",
+            "request": "launch",
+            "mainClass": "duoc.rabbit_service.RabbitServiceApplication",
+            "projectName": "rabbit-service"
+        },
+        {
+            "type": "java",
             "name": "Spring Boot-BffApplication<bff>",
             "request": "launch",
             "cwd": "${workspaceFolder}",
