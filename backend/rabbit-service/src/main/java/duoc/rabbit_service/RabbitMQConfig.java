@@ -92,13 +92,13 @@ public class RabbitMQConfig {
     }
 
     @Bean
-    public Binding notifSolicitud() {
-        return BindingBuilder.bind(notificacionesQueue()).to(eventosExchange()).with("solicitud.creada");
+    public Binding notifPerfil() {
+        return BindingBuilder.bind(notificacionesQueue()).to(eventosExchange()).with("perfil.actualizado");
     }
 
     @Bean
-    public Binding notifSoporte() {
-        return BindingBuilder.bind(notificacionesQueue()).to(eventosExchange()).with("soporte.mensaje");
+    public Binding notifCompra() {
+        return BindingBuilder.bind(notificacionesQueue()).to(eventosExchange()).with("compra.confirmada");
     }
 
     @Bean
