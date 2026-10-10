@@ -18,6 +18,7 @@ export class TransactionsService {
   private readonly broadcast = inject(MsalBroadcastService);
   private readonly destroy = inject(DestroyRef);
   private readonly url = `${environment.apiBaseUrl}/api/solicitudes`;
+  private readonly eventosUrl = `${environment.apiBaseUrl}/api/rabbit/eventos/carrito.confirmado`;
   private owner: string | null = null;
   readonly authenticated = signal(false);
   private request?: Subscription;
@@ -44,15 +45,20 @@ export class TransactionsService {
   }
 
   create(items: NewRequest[], onSuccess: () => void): void {
-    if (!this.owner) { this.error.set('Inicia sesión para registrar la solicitud.'); return; }
-    if (!items.length || this.saving()) return;
-    this.saving.set(true); this.error.set(null);
-    this.http.post<RequestDto[]>(this.url, { items }).pipe(timeout(15000))
-      .pipe(finalize(() => this.saving.set(false))).subscribe({
-        next: created => { this.transactions.update(current => [...created.map(item => this.toTransaction(item)), ...current]); onSuccess(); },
-        error: error => this.error.set(this.failure('crear la solicitud', error)),
-      });
-  }
+  if (!this.owner) { this.error.set('Inicia sesión para registrar la solicitud.'); return; }
+  if (!items.length || this.saving()) return;
+  this.saving.set(true); this.error.set(null);
+  this.http.post(this.eventosUrl, { items }, { responseType: 'text' })
+    .pipe(timeout(15000), finalize(() => this.saving.set(false)))
+    .subscribe({
+      next: () => {
+        onSuccess();
+        // El listener guarda los pedidos de forma asíncrona: recargamos tras un instante
+        setTimeout(() => this.refresh(), 1500);
+      },
+      error: error => this.error.set(this.failure('crear la solicitud', error)),
+    });
+}
 
   private toTransaction(item: RequestDto): Transaction {
     const status: Transaction['status'] = item.estado === 'LISTO' ? 'Entregado' :

@@ -15,7 +15,7 @@ export class SupportPage {
   private readonly fb = inject(FormBuilder);
   private readonly auth = inject(AuthService);
   readonly support = inject(SupportService);
-  readonly sentId = signal<number | null>(null);
+  readonly sent = signal(false);
   readonly email = computed(() => this.auth.currentUser()?.email ?? '');
   readonly categories: { value: SupportCategory; label: string }[] = [
     { value: 'pedido', label: 'Pedido o despacho' },
@@ -43,14 +43,14 @@ export class SupportPage {
   }
 
   submit(): void {
-    this.sentId.set(null);
+    this.sent.set(false);
     if (this.form.invalid) {
       this.form.markAllAsTouched();
       return;
     }
-    this.support.create(this.form.getRawValue(), created => {
-      this.sentId.set(created.id);
-      this.form.reset({ correo: this.email(), asunto: '', categoria: 'pedido', mensaje: '' });
-    });
+    this.support.create(this.form.getRawValue(), () => {
+  this.sent.set(true);
+  this.form.reset({ correo: this.email(), asunto: '', categoria: 'pedido', mensaje: '' });
+});
   }
 }
