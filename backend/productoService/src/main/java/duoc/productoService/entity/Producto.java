@@ -14,6 +14,7 @@ public class Producto {
     private Double price;
     private String accent;
     private String stripe;
+    private Integer unidadesVendidas;
 
     @Enumerated(EnumType.STRING)
     private ProductCategory category;
@@ -50,4 +51,7 @@ public class Producto {
 
     public List<String> getSizes() { return sizes; }
     public void setSizes(List<String> sizes) { this.sizes = sizes; }
+
+    public Integer getUnidadesVendidas() { return unidadesVendidas; }
+    public void setUnidadesVendidas(Integer unidadesVendidas) { this.unidadesVendidas = unidadesVendidas; }
 }

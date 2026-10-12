@@ -24,7 +24,8 @@ public class ProxyController {
         "carritos", "http://172.31.17.25:8084",
         "solicitudes", "http://172.31.95.160:8087",
         "notificaciones", "http://172.31.95.160:8086",
-        "mensajes", "http://172.31.95.160:8088"
+        "mensajes", "http://172.31.95.160:8088",
+        "rabbit","http://172.31.16.142:8085"
     );
 
     public ProxyController(WebClient.Builder webClientBuilder) {

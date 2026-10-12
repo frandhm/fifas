@@ -17,6 +17,7 @@ export class NotificationsService {
   private readonly broadcast = inject(MsalBroadcastService);
   private readonly destroy = inject(DestroyRef);
   private readonly url = `${environment.apiBaseUrl}/api/notificaciones`;
+  private readonly eventosUrl = `${environment.apiBaseUrl}/api/rabbit/eventos`;
   private owner: string | null = null;
   private generation = 0;
   private listRequest?: Subscription;
@@ -28,6 +29,12 @@ export class NotificationsService {
   readonly error = signal<string | null>(null);
   readonly toast = signal<string | null>(null);
   readonly pending = signal<number[]>([]);
+  private readonly routingKeys: Record<NotificationType, string> = {
+  sesion: 'sesion.iniciada',
+  carrito: 'carrito.agregado',
+  perfil: 'perfil.actualizado',
+  compra: 'compra.confirmada',
+};
 
   constructor() {
     this.broadcast.inProgress$.pipe(
@@ -83,19 +90,25 @@ export class NotificationsService {
     });
   }
   notify(tipo: NotificationType, mensaje: string): void {
-    this.show(mensaje);
-    // Guest cart actions show a toast but never persist under another account.
-    const key = this.accountKey();
-    if (!key) return;
-    this.http.post<NotificationItem>(this.url, { tipo, mensaje }).pipe(timeout(15000), takeUntilDestroyed(this.destroy)).subscribe({
-      next: () => { if (key === this.accountKey()) this.refresh(); },
-      error: (error: unknown) => {
-        if (key !== this.accountKey()) return;
-        this.error.set(this.failure('guardar la notificación', error));
-        this.show(`${mensaje} No se pudo guardar el aviso en tu historial.`);
-      },
-    });
-  }
+  this.show(mensaje);
+  const key = this.accountKey();
+  if (!key) return;
+  this.http.post(
+    `${this.eventosUrl}/${this.routingKeys[tipo]}`,
+    { tipo, mensaje },
+    { responseType: 'text' }
+  ).pipe(timeout(15000), takeUntilDestroyed(this.destroy)).subscribe({
+    next: () => {
+      // El consumidor guarda la notificación de forma asíncrona: esperamos un instante antes de recargar
+      setTimeout(() => { if (key === this.accountKey()) this.refresh(); }, 1000);
+    },
+    error: (error: unknown) => {
+      if (key !== this.accountKey()) return;
+      this.error.set(this.failure('guardar la notificación', error));
+      this.show(`${mensaje} No se pudo guardar el aviso en tu historial.`);
+    },
+  });
+}
   setRead(item: NotificationItem): void {
     if (item.leido || this.pending().includes(item.id)) return;
     const generation = this.generation;
