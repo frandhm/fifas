@@ -11,8 +11,8 @@
       <form class="ticket-form" [formGroup]="form" (ngSubmit)="submit()" novalidate>
         <div class="form-heading"><div><small>NUEVA SOLICITUD</small><h2>¿Cómo podemos ayudarte?</h2></div><span>Respuesta habitual: 24–48 h</span></div>
 
-        @if (sentId()) {
-          <div class="success" role="status"><strong>Solicitud enviada</strong><span>Tu número de seguimiento es #{{ sentId() }}.</span></div>
+        @if (sent()) {
+          <div class="success" role="status"><strong>Solicitud enviada</strong><span>La estamos registrando. Aparecerá en tu historial en unos segundos.</span></div>
         }
         @if (support.error()) { <div class="error" role="alert">{{ support.error() }}</div> }
 

@@ -27,6 +27,7 @@ export interface NewSupportTicket {
 export class SupportService {
   private readonly http = inject(HttpClient);
   private readonly url = `${environment.apiBaseUrl}/api/mensajes`;
+  private readonly eventosUrl = `${environment.apiBaseUrl}/api/rabbit/eventos/soporte.mensaje`;
   readonly tickets = signal<SupportTicket[]>([]);
   readonly loading = signal(false);
   readonly saving = signal(false);
@@ -44,16 +45,17 @@ export class SupportService {
     });
   }
 
-  create(ticket: NewSupportTicket, onSuccess: (created: SupportTicket) => void): void {
+  create(ticket: NewSupportTicket, onSuccess: () => void): void {
     if (this.saving()) return;
     this.saving.set(true);
     this.error.set(null);
-    this.http.post<SupportTicket>(this.url, ticket).pipe(
+    this.http.post(this.eventosUrl, ticket, { responseType: 'text' }).pipe(
       timeout(15000), finalize(() => this.saving.set(false)),
     ).subscribe({
-      next: created => {
-        this.tickets.update(items => [created, ...items]);
-        onSuccess(created);
+      next: () => {
+        onSuccess();
+        // El listener guarda el ticket de forma asíncrona: recargamos tras un instante
+        setTimeout(() => this.refresh(), 1000);
       },
       error: error => this.error.set(this.message('enviar tu solicitud', error)),
     });
