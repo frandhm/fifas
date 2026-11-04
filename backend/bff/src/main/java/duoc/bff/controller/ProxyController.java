@@ -18,14 +18,20 @@ public class ProxyController {
     private final WebClient.Builder webClientBuilder;
 
     // Aqui defines a que microservicio corresponde cada primer segmento de la ruta
+    private static final String MC1_HOST = System.getenv().getOrDefault("MC1_HOST", "http://172.31.31.56");
+    private static final String MC2_HOST = System.getenv().getOrDefault("MC2_HOST", "http://172.31.23.71");
+    private static final String RABBIT_HOST = System.getenv().getOrDefault("RABBIT_HOST", "http://172.31.27.189");
+    private static final String KAFKA_HOST = System.getenv().getOrDefault("KAFKA_HOST", "http://172.31.22.133");
+
     private static final Map<String, String> RUTAS = Map.of(
-        "usuarios", "http://172.31.17.25:8082",
-        "productos", "http://172.31.17.25:8083",
-        "carritos", "http://172.31.17.25:8084",
-        "solicitudes", "http://172.31.95.160:8087",
-        "notificaciones", "http://172.31.95.160:8086",
-        "mensajes", "http://172.31.95.160:8088",
-        "rabbit","http://172.31.16.142:8085"
+        "usuarios", MC2_HOST + ":8082",
+        "productos", MC2_HOST + ":8083",
+        "carritos", MC2_HOST + ":8084",
+        "solicitudes", MC1_HOST + ":8087",
+        "notificaciones", MC1_HOST + ":8086",
+        "mensajes", MC1_HOST + ":8088",
+        "rabbit", RABBIT_HOST + ":8085",
+        "kafka", KAFKA_HOST + ":8091"
     );
 
     public ProxyController(WebClient.Builder webClientBuilder) {
