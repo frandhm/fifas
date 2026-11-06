@@ -10,5 +10,5 @@ export const environment = {
       'api://4974cb3b-f538-4df9-8aec-d2c5dca687d0/access_as_user'
     ] as string[],
   },
-  apiBaseUrl: 'https://47o1qkg4d0.execute-api.us-east-1.amazonaws.com/fifas',
+  apiBaseUrl: 'https://vf6x5hz3r2.execute-api.us-east-1.amazonaws.com/fifas',
 };
