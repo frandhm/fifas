@@ -19,6 +19,7 @@ export class TransactionsService {
   private readonly destroy = inject(DestroyRef);
   private readonly url = `${environment.apiBaseUrl}/api/solicitudes`;
   private readonly eventosUrl = `${environment.apiBaseUrl}/api/rabbit/eventos/carrito.confirmado`;
+  private readonly kafkaUrl = `${environment.apiBaseUrl}/api/kafka/eventos/ventas.registradas`;
   private owner: string | null = null;
   readonly authenticated = signal(false);
   private request?: Subscription;
@@ -45,20 +46,39 @@ export class TransactionsService {
   }
 
   create(items: NewRequest[], onSuccess: () => void): void {
-  if (!this.owner) { this.error.set('Inicia sesión para registrar la solicitud.'); return; }
-  if (!items.length || this.saving()) return;
-  this.saving.set(true); this.error.set(null);
-  this.http.post(this.eventosUrl, { items }, { responseType: 'text' })
-    .pipe(timeout(15000), finalize(() => this.saving.set(false)))
-    .subscribe({
-      next: () => {
-        onSuccess();
-        // El listener guarda los pedidos de forma asíncrona: recargamos tras un instante
-        setTimeout(() => this.refresh(), 1500);
-      },
-      error: error => this.error.set(this.failure('crear la solicitud', error)),
+    if (!this.owner) { this.error.set('Inicia sesión para registrar la solicitud.'); return; }
+    if (!items.length || this.saving()) return;
+    this.saving.set(true); this.error.set(null);
+    this.http.post(this.eventosUrl, { items }, { responseType: 'text' })
+      .pipe(timeout(15000), finalize(() => this.saving.set(false)))
+      .subscribe({
+        next: () => {
+          onSuccess();
+          this.publishSales(items);
+          // El listener guarda los pedidos de forma asíncrona: recargamos tras un instante
+          setTimeout(() => this.refresh(), 1500);
+        },
+        error: error => this.error.set(this.failure('crear la solicitud', error)),
+      });
+  }
+
+  // Kafka corre en paralelo a RabbitMQ: un fallo aquí no afecta la compra
+  private publishSales(items: NewRequest[]): void {
+    items.forEach(i => {
+      const total = Number(i.precioUnitario) * Number(i.cantidad);
+      this.http.post(
+        `${this.kafkaUrl}?key=${encodeURIComponent(i.productoId)}`,
+        {
+          productoId: i.productoId,
+          cantidad: Number(i.cantidad),
+          precioUnitario: Number(i.precioUnitario),
+          total,
+          timestamp: new Date().toISOString(),
+        },
+        { responseType: 'text' },
+      ).subscribe({ error: e => console.warn('Kafka no disponible', e) });
     });
-}
+  }
 
   private toTransaction(item: RequestDto): Transaction {
     const status: Transaction['status'] = item.estado === 'LISTO' ? 'Entregado' :
