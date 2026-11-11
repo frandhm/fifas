@@ -1,0 +1,21 @@
+server:
+  port: 8091
+
+spring:
+  application:
+    name: kafkaService
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP:localhost:9092}
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: kafka-service-alertas
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    streams:
+      application-id: ventas-pipeline
+
+app:
+  umbral-venta-grande: 100000
